@@ -1,0 +1,6 @@
+title: StereoWorkFlow
+description: A custom project for stereo-Seq data
+baseurl: "/projects" # Set this based on your URL structure
+url: "https://StereoWorkflow.github.io"
+theme: minima
+
