@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: _layouts/default.html
 title: Welcome
 ---
 # Welcome to My Project Site
