@@ -6,115 +6,64 @@
   <meta name="generator" content="Hugo 0.114.1">
   <title>StereoSeq Data Workflow</title>
 
+  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"/>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <!-- Custom Styles -->
   <link rel="stylesheet" href="/css/sidebarStyle.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-white mediumnavigation nav-down navbar-static-top">
-  <div class="container pr-0">  
-    <span style="font-family: 'Roboto Mono', monospace;">
-      [Project status: UnderDevelopment]
-    </span>
-
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarMediumish"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <div class="container">
+    <a class="navbar-brand" href="#">StereoSeq Data Workflow</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    
-    <div class="collapse navbar-collapse" id="navbarMediumish">
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home</a>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
-<div class="site-content">
-  <div class="container">
-    <link rel="stylesheet" href="/css/numbered_headers.css">
 
-    <div class="main-content">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-3">
-            <nav id="toc" class="sticky-top" style="padding-top: 50px;"></nav>
-          </div>
-          <div class="col-sm-9">
-            <div class="mainheading">
-             <h1 style="font-size: 40px; font-weight: bold;text-align: center;">StereoSeq Data Workflow</h1>
-	    <h2 style="font-size: 20px; color: red; font-style: italic; text-align: center;">Created by Stomics US Data Team</h2>
-            </div>
-
-
- 
- <!-- Sidebar -->
-<<<<<<< HEAD
-<div class="col-sm-3">
-    <nav id="toc" class="sticky-top" style="padding-top: 50px;">
-        <h3 style="font-size: 30px;">Workflow Navigation</h3>
+<div class="container mt-4">
+  <div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+      <div class="sticky-top" style="top: 20px;">
+        <h3>Navigation</h3>
         <ul class="nav flex-column">
-            <li class="nav-item"><a href="#preparation" class="nav-link">Preparation</a></li>
-            <li class="nav-item"><a href="#loadData" class="nav-link">Load Data</a></li>
-            <li class="nav-item"><a href="#qualityControl" class="nav-link">Quality Control</a></li>
-            <li class="nav-item"><a href="#normalizeExpression" class="nav-link">Normalize Expression Data</a></li>
-            <li class="nav-item"><a href="#Preprocessing" class="nav-link">Preprocessing</a></li>
-            <li class="nav-item"><a href="#clustering" class="nav-link">Clustering</a></li>
-            <li class="nav-item"><a href="#expressionEnhancement" class="nav-link">Expression Enhancement</a></li>
-            <li class="nav-item"><a href="#spatiallyVariableGenesIdentification" class="nav-link">Spatially Variable Genes Identification</a></li>
-            <li class="nav-item"><a href="#spatialDomainDetection" class="nav-link">Spatial Domain Detection</a></li>
-            <li class="nav-item"><a href="#CellTypeAnnotation" class="nav-link">Cell Type Annotation</a></li>
-            <li class="nav-item"><a href="#cellSegmentation" class="nav-link">Cell Segmentation</a></li>
-            <li class="nav-item"><a href="#cellCellCommunications" class="nav-link">Cell–cell Communications</a></li>
-=======
-    <div class="sidebar">
-        <h3 style="font-size: 30px;">Workflow Navigation</h3>
-        <ul>
-            <li><a href="#preparation">Preparation</a></li>
-            <li><a href="#loadData">Load Data</a></li>
-            <li><a href="#qualityControl">Quality Control</a></li>
-            <li><a href="#normalizeExpression">Normalize Expression Data</a></li>
-            <li><a href="#Preprocessing">Preprocessing</a></li>
-            <li><a href="#clustering">Clustering</a></li>
-            <li><a href="#expression enhancement">expression enhancement</a></li>
-            <li><a href="#Spatially variable genes identification">Spatially variable genes identification</a></li>
-            <li><a href="#Spatial domain detection">Spatial domain detection</a></li>
-            <li><a href="#Cell segmentation">Cell segmentation</a></li>
-            <li><a href="#Cell–cell communications">Cell–cell communications</a></li>
->>>>>>> 19498e6b465c179b09a0d40a4631d25bf8d812d3
+	<li class="nav-item"><a href="#preparation" class="nav-link">Preparation</a></li>
+	<li class="nav-item"><a href="#loadData" class="nav-link">Load Data</a></li>
+	<li class="nav-item"><a href="#Quality Control" class="nav-link">Quality Control</a></li>
+	<li class="nav-item"><a href="#Normalization" class="nav-link">Normalization</a></li>
+	<li class="nav-item"><a href="#Preprocessing" class="nav-link">Preprocessing</a></li>
+	<li class="nav-item"><a href="#Clustering" class="nav-link">Clustering</a></li>
+	<li class="nav-item"><a href="#Expression Enhancement" class="nav-link">Expression Enhancement</a></li>
+	<li class="nav-item"><a href="#Spatially variable genes identification" class="nav-link">Spatially variable genes identification</a></li>
+	<li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
+	<li class="nav-item"><a href="#Cell Type Annotation" class="nav-link">Cell Type Annotation</a></li>
+	<li class="nav-item"><a href="#Cell Segmentation" class="nav-link">Cell Segmentation</a></li>
+	<li class="nav-item"><a href="#Cell–cell communications" class="nav-link">Cell–cell communications</a></li>
         </ul>
-    </nav>
-</div>
-
-            <img src="images/Image_20240927214042.png" alt="Description of image" style="width:300px; height:auto;">
-
-            <div class="article-post">
-              <p>This is a StereoSeq data analysis workflow. This demonstration will use a data set <a href="http://116.6.21.110:8090/share/21bb9df9-e6c5-47c5-9aa8-29f2d23a6df4" target="_blank" rel="noopener noreferrer">SS200000135TL_D1</a> of a mouse brain.</p>
-
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="btn-group float-right">
-                    <button type="button" class="btn btn-default btn-xs code-folding-btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-                    <ul class="dropdown-menu" style="min-width: 120px; font-size: 12px;">
-                      <li><a id="show-all-code" href="#" style="font-family: Monaco; color: black; margin-left: 8px;">Show all code</a></li>
-                      <li><a id="hide-all-code" href="#" style="font-family: Monaco; color: black; margin-left: 8px;">Hide all code</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
+    </div>
+    <!-- Main Content -->
+    <div class="col-md-9">
+      <h1 class="mb-4">StereoSeq Data Workflow</h1>
+      <p>This is a StereoSeq data analysis workflow. This demonstration will use a data set SS200000135TL_D1 of a mouse brain.</p>
+      <!-- More content goes here -->
     </div>
   </div>
 </div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </body>
 </html>
