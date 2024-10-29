@@ -57,7 +57,7 @@
 	  <li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
 	  <li class="nav-item"><a href="#Cell Type Annotation" class="nav-link">Cell Type Annotation</a></li>
 	  <li class="nav-item"><a href="#Cell Segmentation" class="nav-link">Cell Segmentation</a></li>
-	  <li class="nav-item"><a href="#Cell–cell communications" class="nav-link">Cell–cell communications</a></li>
+	  <li class="nav-item"><a href="#Cell cell communications" class="nav-link">Cell cell communications</a></li>
           <!-- More navigation items -->
         </ul>
       </div>
@@ -79,7 +79,7 @@
       <p>Ensure that the following dependencies are installed:</p>
       
       <!-- Code block toggle button -->
-      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#envCode" aria-expanded="false" aria-controls="envCode">
+      <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#envCode" aria-expanded="false" aria-controls="envCode">
         Show/Hide Code
       </button>
 
@@ -97,7 +97,7 @@ pip install numpy pandas scanpy
       <p>Download the required dataset:</p>
 
       <!-- Code block toggle button -->
-      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#dataCode" aria-expanded="false" aria-controls="dataCode">
+      <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#dataCode" aria-expanded="false" aria-controls="dataCode">
         Show/Hide Code
       </button>
 
@@ -109,6 +109,58 @@ wget http://example.com/dataset/SS200000135TL_D1.zip
 unzip SS200000135TL_D1.zip
         </code></pre>
       </div>
+
+      <!-- Expression Enhancement -->
+      <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
+      <h3>BayesSpace</h3>      
+      <!-- Code block toggle button -->
+      <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
+        Show/Hide Code
+      </button>
+
+      <!-- Collapsible code block -->
+      <div class="collapse" id="BayesSpace">
+        <pre><code class="language-R">
+          data=readRDS("SS200000135TL_D1.tissue.gef_bin20.seurat.rds")
+          st=as.SingleCellExperiment(data)
+          colData(st)$col=colData(st)$x/200
+          colData(st)$row=colData(st)$y/200
+          colData(st)$imagecol=colData(st)$x
+          colData(st)$imagerow=colData(st)$y
+          
+          st <- spatialPreprocess(st, platform="ST", 
+                                        n.PCs=7, n.HVGs=2000, log.normalize=FALSE)
+          
+          
+          st.tune <- qTune(st, qs=seq(2, 20), platform="ST", d=7)
+          
+          qPlot(st.tune)
+          
+          st.tune <- spatialCluster(st.tune, q=17, platform="ST", d=7,
+                                     init.method="mclust", model="t",
+                                     gamma=2,
+                                     nrep=1000, burn.in=100,
+                                     save.chain=TRUE)
+          
+          
+          st.enhanced <- spatialEnhance(st.tune, q=17, platform="ST", d=7,
+                                              model="t", gamma=2,
+                                              jitter_prior=0.3, jitter_scale=3.5,
+                                              nrep=1000, burn.in=100,
+                                              save.chain=TRUE)
+          
+          markers=c("Ntng1")
+          st.enhanced <- enhanceFeatures(st.enhanced, st,
+                                               feature_names=markers,
+                                               nrounds=0)
+          featurePlot(st, "Ntng1")
+          featurePlot(st.enhanced, "Ntng1")
+        </code></pre>
+      </div>
+      <img src="images/Image_20240927214042.png" alt="Description of image" style="width:300px; height:auto;">
+
+
+
     </div>
   </div>
 </div>
