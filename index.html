@@ -204,6 +204,7 @@ st_data.filter=preProcessing(st_data)
                     </p>
 
                     <h3>LogNormalize</h3>
+                    <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
                     <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
@@ -213,13 +214,11 @@ st_data.filter=preProcessing(st_data)
                     <div class="collapse" id="LogNormalizeCode">
                         <pre><code class="language-r">
     st_data <- NormalizeData(
-                     st_data.filter,
-                     assay='RNA' ,
-                     normalization.method="LogNormalize" )
+               st_data.filter,
+               assay='RNA' ,
+               normalization.method="LogNormalize" )
 
 </code></pre>
-
-                        <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
 
 
                     </div>
@@ -231,6 +230,7 @@ st_data.filter=preProcessing(st_data)
                     </p>
 
                     <h3>Clustering using seurat</h3>
+                    <img src="images/dimPlot2D.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
                     <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#SeuratClusteringCode" aria-expanded="false" aria-controls="SeuratClusteringCode">
@@ -240,7 +240,7 @@ st_data.filter=preProcessing(st_data)
                     <div class="collapse" id="SeuratClusteringCode">
                         <pre><code class="language-r">
     st_data <- FindVariableFeatures(object=st_data)
-    st_data <- ScaleData(object =st_data)
+               st_data <- ScaleData(object =st_data)
     st_data <- RunPCA(object = st_data)
     st_data <- RunUMAP(object = st_data, dims = 1:20)
     st_data <- FindNeighbors(object = st_data, dims = 1:20)
@@ -248,13 +248,6 @@ st_data.filter=preProcessing(st_data)
 
 
 </code></pre>
-
-<<<<<<< HEAD
-                        <img src="images/dimPlot2D.png" alt="Description of image" style="width:600px; height:auto;">
-=======
-                        <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
->>>>>>> 08d4d3d30d0a1794cbca0b57ae26f3137472227a
-
 
                     </div>
 
@@ -308,27 +301,29 @@ st_data.filter=preProcessing(st_data)
                     <img src="images/Image_20241029120419.png" alt="Description of image" style="width:600px; height:auto;">
 
 
-                    <!-- Spatial Domain Detection Section -->
-                    <h2 id="Spatial Domain Detection" class="mt-5">Spatial Domain Detection</h2>
+
+                    <!-- Giotto Section -->
+                    <h2 id="Giotto" class="mt-5">Giotto</h2>
+
+                    <h3>Create Giotto object</h3>
                     <p>
-                        Spatial Domain Detection analysis in spatial transcriptomics involves identifying and characterizing distinct tissue regions based on gene expression patterns.
-                        By analyzing the spatial organization of genes, this method segments the tissue into biologically meaningful domains, revealing how gene expression varies across different tissue structures.
-                        The analysis often uses dimensionality reduction and clustering algorithms to group spots with similar expression profiles,
-                        helping to uncover spatially resolved functional zones, which can provide insights into tissue architecture, cell-type distribution, and regional biological processes.
+                        Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that includes expression data, spatial coordinates, and metadata for downstream analysis.
+                        This step provides the foundation for visualizing and analyzing spatial gene expression patterns in tissue samples.
                     </p>
-
-                    <h3>LogNormalize</h3>
-
-                    <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#SpatialDDCode" aria-expanded="false" aria-controls="SpatialDDCode">
+                    <!-- Code block toggle on -->
+                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
                         Show/Hide Code
                     </button>
-
                     <!-- Collapsible code block -->
-                    <div class="collapse" id="SpatialDDCode">
+                    <div class="collapse" id="CreateGiottoobject">
                         <pre><code class="language-r">
 library(Matrix)
 library(Seurat)
+library(Giotto)
+
+data_path="Data/SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.rds"
+
+st_data=readRDS(data_path)
 
 meta_data <- st_data@meta.data
              # Create a data frame with ID, X, and Y columns
@@ -338,35 +333,62 @@ meta_data <- st_data@meta.data
   Y = meta_data$y
 )
 
+# View the formatted coordinates
+head(formatted_coordinates)
+
 # Save to a text file
-write.table(formatted_coordinates, "./SS200000135TL_D1.tissue.gef_bin20.seurat.coordinates.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+write.table(formatted_coordinates, "Data/SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.coordinates.txt", sep = "\t", row.names = FALSE, quote = FALSE)
 
 formatted_metadata <- data.frame(
   CellID = rownames(meta_data),
-  nCount = meta_data$nCount_Spatial,
+  nCount = meta_data$nCount_Spatial,             # Replace with your actual region column
   nFeature = meta_data$nCount_Spatial,
   mito=meta_data$percent.mito,
   x=meta_data$x,
   y=meta_data$y
   )
 
+# View the formatted metadata
+head(formatted_metadata)
+
 # Save to a text file
-write.table(formatted_metadata, "./SS200000135TL_D1.tissue.gef_bin20.seurat.metadata.txt", sep = "\t", row.names = FALSE, quote = FALSE)
+write.table(formatted_metadata, "Data/SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.metadata.txt", sep = "\t", row.names = FALSE, quote = FALSE)
 
 expression_matrix <- as.matrix(st_data@assays$RNA@counts)
-expression_df <- data.frame(expression_matrix)
+expression_df <- data.frame(expression_matrix, check.names = FALSE)
 rownames(expression_df) <- rownames(expression_matrix)
-write.table(expression_df, "./SS200000135TL_D1.tissue.gef_bin20.seurat.expression_matrix.txt", sep = "\t", quote = FALSE, col.names = NA)
+write.table(expression_df, "Data/SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.expression_matrix.txt", sep = "\t", quote = FALSE, col.names = NA)
 
+expression=paste0(dataDir,"SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.expression_matrix.txt")
+coordinates=paste0(dataDir,"SS200000135TL_D1.tissue.gef_bin80.filtered.seurat.coordinates.txt")
+giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordinates,instructions = instructions)
+
+
+</code></pre>
+                    </div>
+
+                        <h3>calculalate highly vairable genes</h3>
+                        <p>
+                        <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
+
+                        <!-- Code block toggle on -->
+                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
+                            Show/Hide Code
+                        </button>
+                        <!-- Collapsible code block -->
+                        <div class="collapse" id="calculateHVG">
+                            <pre><code class="language-r">
+    giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
+    giotto_obj=calculateHVG(giotto_object.norm)
 </code></pre>
 
 
+
+                        </div>
+
+
                     </div>
-
-
-
                 </div>
-        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
