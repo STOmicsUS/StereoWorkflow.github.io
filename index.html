@@ -369,28 +369,25 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
 
                         <h3>calculalate highly vairable genes</h3>
                         <p>
-                            Genes are first grouped into average expression bins (nr_expression_groups), and the coefficient of variation (COV) for each gene is standardized to a z-score within each bin. 
-                            Genes with a z-score above the defined threshold (zscore_threshold) are classified as highly variable..
-                        </p>
-                            <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
+                        <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
 
-                            <!-- Code block toggle on -->
-                            <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
-                                Show/Hide Code
-                            </button>
-                            <!-- Collapsible code block -->
-                            <div class="collapse" id="calculateHVG">
-                                <pre><code class="language-r">
+                        <!-- Code block toggle on -->
+                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
+                            Show/Hide Code
+                        </button>
+                        <!-- Collapsible code block -->
+                        <div class="collapse" id="calculateHVG">
+                            <pre><code class="language-r">
     giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
     giotto_obj=calculateHVG(giotto_object.norm)
 </code></pre>
 
 
 
-                            </div>
+                        </div>
 
 
-</div>
+                    </div>
                 </div>
     </div>
 
