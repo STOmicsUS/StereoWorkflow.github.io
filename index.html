@@ -116,26 +116,7 @@ pip install numpy pandas scanpy
     data_path="./SS200000135TL_D1.tissue.gef_bin80.seurat.rds"
     st_data=readRDS(data_path)
 </code></pre>
-<<<<<<< HEAD
                 </div>
-=======
-
-                    <p>Load data in python from h5ad file</p>
-                    <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#loadPythoncode" aria-expanded="false" aria-controls="loadPythoncode">
-                        Show/Hide Code
-                    </button>
-
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="loadPythoncode">
-                        <pre><code class="language-python">
-      import scanpy as sc
-      data_path="./SS200000135TL_D1.tissue.gef_bin80.annData.h5ad"
-      st_data = sc.read_h5ad(data_path)
-</code></pre>
-
-                    </div>
->>>>>>> c24976e6057a146bbf7b6a21f2ebb809ba39aee0
 
 
                     <!-- Preprocessing Section -->
@@ -216,11 +197,7 @@ st_data.filter=preProcessing(st_data)
                     <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
-<<<<<<< HEAD
                     <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
-=======
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
->>>>>>> c24976e6057a146bbf7b6a21f2ebb809ba39aee0
                         Show/Hide Code
                     </button>
 
@@ -243,11 +220,7 @@ st_data.filter=preProcessing(st_data)
                         <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
 
                         <!-- Code block toggle button -->
-<<<<<<< HEAD
                         <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
-=======
-                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
->>>>>>> c24976e6057a146bbf7b6a21f2ebb809ba39aee0
                             Show/Hide Code
                         </button>
                         <!-- Collapsible code block -->
