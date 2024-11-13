@@ -113,7 +113,7 @@ pip install numpy pandas scanpy
                 <div class="collapse" id="loadRcode">
                     <pre><code class="language-r">
     library(Seurat)
-    data_path="./SS200000135TL_D1.tissue.gef_bin20.seurat.rds"
+    data_path="./SS200000135TL_D1.tissue.gef_bin80.seurat.rds"
     st_data=readRDS(data_path)
 </code></pre>
 
@@ -127,7 +127,7 @@ pip install numpy pandas scanpy
                     <div class="collapse" id="loadPythoncode">
                         <pre><code class="language-python">
       import scanpy as sc
-      data_path="./SS200000135TL_D1.tissue.gef_bin20.annData.h5ad"
+      data_path="./SS200000135TL_D1.tissue.gef_bin80.annData.h5ad"
       st_data = sc.read_h5ad(data_path)
 </code></pre>
 
@@ -140,7 +140,7 @@ pip install numpy pandas scanpy
                     <p>
                         In spatial transcriptomics data, filtering low-quality spots is essential to ensure reliable downstream analyses, and using robust metrics like the Median Absolute Deviation (MAD) helps identify outliers effectively.
                         The MAD method provides a robust statistic of variability, minimizing the influence of extreme values that may arise from technical noise or damaged tissue regions.
-                        When applying MAD-based filtering, spots with extreme counts or features that deviate significantly from the median by a set threshold, such as 5 MADs, are flagged and considered for removal.
+                        When applying MAD-based filtering, spots with extreme counts or features that deviate significantly from the median by a set threshold, such as 3-5 MADs, are flagged and considered for removal.
                         This approach helps eliminate spots with anomalously low gene counts or excessive count depth that may result from issues like broken membranes or sequencing errors.
                     </p>
                     <p>
@@ -148,7 +148,7 @@ pip install numpy pandas scanpy
                         However, it is important to apply this filter carefully, as certain cell types or tissue regions might naturally have higher mitochondrial content due to biological functions related to respiration.
                     </p>
                     <p>
-                        By jointly considering MAD-based thresholds for count depth and filtering based on mitochondrial read fractions, researchers can strike a balance between removing poor-quality data and retaining meaningful biological variation.
+                        By considering MAD-based thresholds for count depth and filtering based on mitochondrial read fractions, researchers can strike a balance between removing poor-quality data and retaining meaningful biological variation.
                         This approach ensures that only genuinely low-quality spots are filtered out, preserving spatial and functional tissue heterogeneity.
                         Ultimately, these filtering steps improve the accuracy and interpretability of spatial transcriptomics analysis by focusing on reliable, biologically relevant data.
                     </p>
@@ -173,11 +173,11 @@ pip install numpy pandas scanpy
   abs_dev_nFeature <- abs(metadata$nFeature_Spatial - median_nFeature)
   mad_nFeature <- median(abs_dev_nFeature, na.rm = TRUE)
 
-  lower_nCount <- median_nCount - 5 * mad_nCount
-  upper_nCount <- median_nCount + 5 * mad_nCount
+  lower_nCount <- median_nCount - 3 * mad_nCount
+  upper_nCount <- median_nCount + 3 * mad_nCount
 
-  lower_nFeature <- median_nFeature - 5 * mad_nFeature
-  upper_nFeature <- median_nFeature + 5 * mad_nFeature
+  lower_nFeature <- median_nFeature - 3 * mad_nFeature
+  upper_nFeature <- median_nFeature + 3 * mad_nFeature
 
   rds_data.filter <- subset(rds_data, subset = nCount_Spatial  > lower_nCount &
                               nCount_Spatial < upper_nCount &
@@ -200,19 +200,47 @@ st_data.filter=preProcessing(st_data)
                     <!-- Normalization Section -->
                     <h2 id="Normalization" class="mt-5">Normalization</h2>
                     <p>
-                        Normalization in spatial transcriptomics data is essential to account for technical variability and ensure that differences in gene expression across spatial locations reflect true biological variation rather than artifacts. Factors like differences in sequencing depth, RNA capture efficiency, and background noise can introduce biases that obscure meaningful patterns. By normalizing the data, we adjust for these inconsistencies, allowing for accurate comparison of gene expression levels across spatial regions and facilitating reliable downstream analyses, such as identifying spatially variable genes and constructing spatial gene expression maps.
+                        Normalization in spatial transcriptomics data is essential to account for technical variability and ensure that differences in gene expression across spatial locations reflect true biological variation rather than artifacts.
                     </p>
 
-                    <h3>LogNormalize</h3>
-                    <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
+                    <h3>scTransform</h3>
+
+                    <p>
+                        scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene expression counts while considering factors such as sequencing depth and technical biases.
+                    </p>
+
+                    <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
+                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
                         Show/Hide Code
                     </button>
+
                     <!-- Collapsible code block -->
-                    <div class="collapse" id="LogNormalizeCode">
+                    <div class="collapse" id="scTransformCode">
                         <pre><code class="language-r">
+    st_data.norm <- SCTransform(st_data.filter,assay="RNA" , vars.to.regress="percent.mito" , return.only.var.genes=FALSE)
+
+</code></pre>
+
+
+                    </div>
+
+                    <h3>LogNormalize</h3>
+
+                    <p>
+                        LogNormalize is a widely used normalization technique.This method typically involves scaling each cell's total gene expression to a fixed value (such as 10,000), followed by a log-transformation to reduce the impact of outliers and high-expression genes.
+                    </p>
+
+                        <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
+
+                        <!-- Code block toggle button -->
+                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
+                            Show/Hide Code
+                        </button>
+                        <!-- Collapsible code block -->
+                        <div class="collapse" id="LogNormalizeCode">
+                            <pre><code class="language-r">
     st_data <- NormalizeData(
                st_data.filter,
                assay='RNA' ,
@@ -221,10 +249,10 @@ st_data.filter=preProcessing(st_data)
 </code></pre>
 
 
-                    </div>
+                        </div>
 
-                    <!-- Clustering Section -->
-                    <h2 id="Clustering" class="mt-5">Clustering</h2>
+                        <!-- Clustering Section -->
+                        <h2 id="Clustering" class="mt-5">Clustering</h2>
                     <p>
                         Clustering is a technique used to identify groups of cells with similar gene expression profiles, providing insights into the cellular composition and spatial organization of tissues.
                     </p>
@@ -367,8 +395,8 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
 </code></pre>
                     </div>
 
-                        <h3>calculalate highly vairable genes</h3>
-                        <p>
+                    <h3>calculalate highly vairable genes</h3>
+                    <p>
                         <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
 
                         <!-- Code block toggle on -->
@@ -387,7 +415,7 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
                         </div>
 
 
-                    </div>
+                </div>
                 </div>
     </div>
 
