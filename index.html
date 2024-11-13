@@ -87,7 +87,7 @@
                 <p>Ensure that the following dependencies are installed:</p>
 
                 <!-- Code block toggle button -->
-                <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#envCode" aria-expanded="false" aria-controls="envCode">
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#envCode" aria-expanded="false" aria-controls="envCode">
                     Show/Hide Code
                 </button>
 
@@ -105,7 +105,7 @@ pip install numpy pandas scanpy
                 <h2 id="loadData" class="mt-5">Load Data</h2>
                 <p>Load data in R from rds file</p>
                 <!-- Code block toggle button -->
-                <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#loadRcode" aria-expanded="false" aria-controls="loadRcode">
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#loadRcode" aria-expanded="false" aria-controls="loadRcode">
                     Show/Hide Code
                 </button>
 
@@ -116,22 +116,7 @@ pip install numpy pandas scanpy
     data_path="./SS200000135TL_D1.tissue.gef_bin80.seurat.rds"
     st_data=readRDS(data_path)
 </code></pre>
-
-                    <p>Load data in python from h5ad file</p>
-                    <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#loadPythoncode" aria-expanded="false" aria-controls="loadPythoncode">
-                        Show/Hide Code
-                    </button>
-
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="loadPythoncode">
-                        <pre><code class="language-python">
-      import scanpy as sc
-      data_path="./SS200000135TL_D1.tissue.gef_bin80.annData.h5ad"
-      st_data = sc.read_h5ad(data_path)
-</code></pre>
-
-                    </div>
+                </div>
 
 
                     <!-- Preprocessing Section -->
@@ -154,7 +139,7 @@ pip install numpy pandas scanpy
                     </p>
 
                     <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#preparationCode" aria-expanded="false" aria-controls="preparationCode">
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#preparationCode" aria-expanded="false" aria-controls="preparationCode">
                         Show/Hide Code
                     </button>
 
@@ -212,7 +197,7 @@ st_data.filter=preProcessing(st_data)
                     <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
                         Show/Hide Code
                     </button>
 
@@ -235,7 +220,7 @@ st_data.filter=preProcessing(st_data)
                         <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
 
                         <!-- Code block toggle button -->
-                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
+                        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
                             Show/Hide Code
                         </button>
                         <!-- Collapsible code block -->
@@ -261,7 +246,7 @@ st_data.filter=preProcessing(st_data)
                     <img src="images/dimPlot2D.png" alt="Description of image" style="width:600px; height:auto;">
 
                     <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#SeuratClusteringCode" aria-expanded="false" aria-controls="SeuratClusteringCode">
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratClusteringCode" aria-expanded="false" aria-controls="SeuratClusteringCode">
                         Show/Hide Code
                     </button>
                     <!-- Collapsible code block -->
@@ -285,7 +270,7 @@ st_data.filter=preProcessing(st_data)
                     <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
                     <h3>BayesSpace</h3>
                     <!-- Code block toggle button -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
                         Show/Hide Code
                     </button>
 
@@ -339,7 +324,7 @@ st_data.filter=preProcessing(st_data)
                         This step provides the foundation for visualizing and analyzing spatial gene expression patterns in tissue samples.
                     </p>
                     <!-- Code block toggle on -->
-                    <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
                         Show/Hide Code
                     </button>
                     <!-- Collapsible code block -->
@@ -400,7 +385,7 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
                         <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
 
                         <!-- Code block toggle on -->
-                        <button class="btn btn-success float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
+                        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
                             Show/Hide Code
                         </button>
                         <!-- Collapsible code block -->
