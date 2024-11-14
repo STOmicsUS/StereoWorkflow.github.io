@@ -57,6 +57,7 @@
                         <li class="nav-item"><a href="#Preprocessing" class="nav-link">Preprocessing</a></li>
                         <li class="nav-item"><a href="#Normalization" class="nav-link">Normalization</a></li>
                         <li class="nav-item"><a href="#Clustering" class="nav-link">Clustering</a></li>
+                        <li class="nav-item"><a href="#Find Marker Genes" class="nav-link">Find Marker Genes</a></li>
                         <li class="nav-item"><a href="#Expression Enhancement" class="nav-link">Expression Enhancement</a></li>
                         <li class="nav-item"><a href="#Spatially variable genes identification" class="nav-link">Spatially variable genes identification</a></li>
                         <li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
@@ -119,33 +120,33 @@ pip install numpy pandas scanpy
                 </div>
 
 
-                    <!-- Preprocessing Section -->
-                    <h2 id="Preprocessing" class="mt-5">Preprocessing</h2>
-                    <h3>Filtering low quality spots</h3>
-                    <p>
-                        In spatial transcriptomics data, filtering low-quality spots is essential to ensure reliable downstream analyses, and using robust metrics like the Median Absolute Deviation (MAD) helps identify outliers effectively.
-                        The MAD method provides a robust statistic of variability, minimizing the influence of extreme values that may arise from technical noise or damaged tissue regions.
-                        When applying MAD-based filtering, spots with extreme counts or features that deviate significantly from the median by a set threshold, such as 3-5 MADs, are flagged and considered for removal.
-                        This approach helps eliminate spots with anomalously low gene counts or excessive count depth that may result from issues like broken membranes or sequencing errors.
-                    </p>
-                    <p>
-                        Furthermore, filtering by the fraction of mitochondrial reads is crucial because spots with a high proportion of mitochondrial counts often indicate compromised cell integrity. These compromised spots may have lost most cytoplasmic RNA, leaving only mitochondrial transcripts, which can skew the data.
-                        However, it is important to apply this filter carefully, as certain cell types or tissue regions might naturally have higher mitochondrial content due to biological functions related to respiration.
-                    </p>
-                    <p>
-                        By considering MAD-based thresholds for count depth and filtering based on mitochondrial read fractions, researchers can strike a balance between removing poor-quality data and retaining meaningful biological variation.
-                        This approach ensures that only genuinely low-quality spots are filtered out, preserving spatial and functional tissue heterogeneity.
-                        Ultimately, these filtering steps improve the accuracy and interpretability of spatial transcriptomics analysis by focusing on reliable, biologically relevant data.
-                    </p>
+                <!-- Preprocessing Section -->
+                <h2 id="Preprocessing" class="mt-5">Preprocessing</h2>
+                <h3>Filtering low quality spots</h3>
+                <p>
+                    In spatial transcriptomics data, filtering low-quality spots is essential to ensure reliable downstream analyses, and using robust metrics like the Median Absolute Deviation (MAD) helps identify outliers effectively.
+                    The MAD method provides a robust statistic of variability, minimizing the influence of extreme values that may arise from technical noise or damaged tissue regions.
+                    When applying MAD-based filtering, spots with extreme counts or features that deviate significantly from the median by a set threshold, such as 3-5 MADs, are flagged and considered for removal.
+                    This approach helps eliminate spots with anomalously low gene counts or excessive count depth that may result from issues like broken membranes or sequencing errors.
+                </p>
+                <p>
+                    Furthermore, filtering by the fraction of mitochondrial reads is crucial because spots with a high proportion of mitochondrial counts often indicate compromised cell integrity. These compromised spots may have lost most cytoplasmic RNA, leaving only mitochondrial transcripts, which can skew the data.
+                    However, it is important to apply this filter carefully, as certain cell types or tissue regions might naturally have higher mitochondrial content due to biological functions related to respiration.
+                </p>
+                <p>
+                    By considering MAD-based thresholds for count depth and filtering based on mitochondrial read fractions, researchers can strike a balance between removing poor-quality data and retaining meaningful biological variation.
+                    This approach ensures that only genuinely low-quality spots are filtered out, preserving spatial and functional tissue heterogeneity.
+                    Ultimately, these filtering steps improve the accuracy and interpretability of spatial transcriptomics analysis by focusing on reliable, biologically relevant data.
+                </p>
 
-                    <!-- Code block toggle button -->
-                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#preparationCode" aria-expanded="false" aria-controls="preparationCode">
-                        Show/Hide Code
-                    </button>
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#preparationCode" aria-expanded="false" aria-controls="preparationCode">
+                    Show/Hide Code
+                </button>
 
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="preparationCode">
-                        <pre><code class="language-r">
+                <!-- Collapsible code block -->
+                <div class="collapse" id="preparationCode">
+                    <pre><code class="language-r">
     st_data=readRDS(data_path)
 
     preProcessing = function(rds_data){
@@ -177,55 +178,55 @@ pip install numpy pandas scanpy
 st_data.filter=preProcessing(st_data)
 
 </code></pre>
-                    </div>
-                    <img src="images/Filtering.png" alt="Description of image" style="width:600px; height:auto;">
+                </div>
+                <img src="images/Filtering.png" alt="Description of image" style="width:600px; height:auto;">
 
 
 
-                    <!-- Normalization Section -->
-                    <h2 id="Normalization" class="mt-5">Normalization</h2>
-                    <p>
-                        Normalization in spatial transcriptomics data is essential to account for technical variability and ensure that differences in gene expression across spatial locations reflect true biological variation rather than artifacts.
-                    </p>
+                <!-- Normalization Section -->
+                <h2 id="Normalization" class="mt-5">Normalization</h2>
+                <p>
+                    Normalization in spatial transcriptomics data is essential to account for technical variability and ensure that differences in gene expression across spatial locations reflect true biological variation rather than artifacts.
+                </p>
 
-                    <h3>scTransform</h3>
+                <h3>scTransform</h3>
 
-                    <p>
-                        scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene expression counts while considering factors such as sequencing depth and technical biases.
-                    </p>
+                <p>
+                    scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene expression counts while considering factors such as sequencing depth and technical biases.
+                </p>
 
-                    <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
+                <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
 
-                    <!-- Code block toggle button -->
-                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
-                        Show/Hide Code
-                    </button>
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
+                    Show/Hide Code
+                </button>
 
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="scTransformCode">
-                        <pre><code class="language-r">
+                <!-- Collapsible code block -->
+                <div class="collapse" id="scTransformCode">
+                    <pre><code class="language-r">
     st_data.norm <- SCTransform(st_data.filter,assay="RNA" , vars.to.regress="percent.mito" , return.only.var.genes=FALSE)
 
 </code></pre>
 
 
-                    </div>
+                </div>
 
-                    <h3>LogNormalize</h3>
+                <h3>LogNormalize</h3>
 
-                    <p>
-                        LogNormalize is a widely used normalization technique.This method typically involves scaling each cell's total gene expression to a fixed value (such as 10,000), followed by a log-transformation to reduce the impact of outliers and high-expression genes.
-                    </p>
+                <p>
+                    LogNormalize is a widely used normalization technique.This method typically involves scaling each cell's total gene expression to a fixed value (such as 10,000), followed by a log-transformation to reduce the impact of outliers and high-expression genes.
+                </p>
 
-                        <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
+                <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
 
-                        <!-- Code block toggle button -->
-                        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
-                            Show/Hide Code
-                        </button>
-                        <!-- Collapsible code block -->
-                        <div class="collapse" id="LogNormalizeCode">
-                            <pre><code class="language-r">
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="LogNormalizeCode">
+                    <pre><code class="language-r">
     st_data <- NormalizeData(
                st_data.filter,
                assay='RNA' ,
@@ -234,24 +235,24 @@ st_data.filter=preProcessing(st_data)
 </code></pre>
 
 
-                        </div>
+                </div>
 
-                        <!-- Clustering Section -->
-                        <h2 id="Clustering" class="mt-5">Clustering</h2>
-                    <p>
-                        Clustering is a technique used to identify groups of cells with similar gene expression profiles, providing insights into the cellular composition and spatial organization of tissues.
-                    </p>
+                <!-- Clustering Section -->
+                <h2 id="Clustering" class="mt-5">Clustering</h2>
+                <p>
+                    Clustering is a technique used to identify groups of cells with similar gene expression profiles, providing insights into the cellular composition and spatial organization of tissues.
+                </p>
 
-                    <h3>Clustering using seurat</h3>
-                    <img src="images/dimPlot2D.png" alt="Description of image" style="width:600px; height:auto;">
+                <h3>Clustering using seurat</h3>
+                <img src="images/dimPlot2D.png" alt="Description of image" style="width:600px; height:auto;">
 
-                    <!-- Code block toggle button -->
-                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratClusteringCode" aria-expanded="false" aria-controls="SeuratClusteringCode">
-                        Show/Hide Code
-                    </button>
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="SeuratClusteringCode">
-                        <pre><code class="language-r">
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratClusteringCode" aria-expanded="false" aria-controls="SeuratClusteringCode">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="SeuratClusteringCode">
+                    <pre><code class="language-r">
     st_data <- FindVariableFeatures(object=st_data)
                st_data <- ScaleData(object =st_data)
     st_data <- RunPCA(object = st_data)
@@ -262,21 +263,50 @@ st_data.filter=preProcessing(st_data)
 
 </code></pre>
 
-                    </div>
+                </div>
+
+                <!-- Find Marker Genes Section -->
+                <h2 id="Find Marker Genes" class="mt-5">Find Marker Genes</h2>
+                <p>
+                    After clustering cells, finding marker genes is a crucial step for identifying unique gene expression profiles that define each cluster.
+                    Marker genes are typically those that are highly expressed within a specific cluster compared to others, providing insights into cell types.
+                    To find marker genes, statistical methods like differential expression analysis are applied to compare gene expression across clusters, identifying genes with significantly higher expression in each group.
+                    These marker genes can then be used to annotate clusters, link them to known cell types, and explore spatial patterns of gene activity within the tissue architecture.
+
+                </p>
 
 
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#MarkerGeneCode" aria-expanded="false" aria-controls="MarkerGeneCode">
+                    Show/Hide Code
+                </button>
 
-                    <!-- Expression Enhancement -->
-                    <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
-                    <h3>BayesSpace</h3>
-                    <!-- Code block toggle button -->
-                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
-                        Show/Hide Code
-                    </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="MarkerGeneCode">
+                    <pre><code class="language-r">
+    de_markers <- FindAllMarkers(st_data.norm2,only.pos=TRUE)
+                  #plot the first marker genes in cluster 1,2,3 and 4
+                  first_genes <- de_markers[!duplicated(de_markers$cluster), ]
 
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="BayesSpace">
-                        <pre><code class="language-r">
+p=SpatialFeaturePlot(object = st_data.norm2, features = rownames(first_genes)[1:4], alpha = c(0.1, 1), ncol = 2)
+
+
+</code></pre>
+                </div>
+
+                <img src="images/Markers.png" alt="Description of image" style="width:600px; height:auto;">
+
+                <!-- Expression Enhancement -->
+                <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
+                <h3>BayesSpace</h3>
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
+                    Show/Hide Code
+                </button>
+
+                <!-- Collapsible code block -->
+                <div class="collapse" id="BayesSpace">
+                    <pre><code class="language-r">
           data=readRDS("SS200000135TL_D1.tissue.gef_bin20.seurat.rds")
           st=as.SingleCellExperiment(data)
           colData(st)$col=colData(st)$x/200
@@ -310,26 +340,56 @@ st_data.filter=preProcessing(st_data)
           featurePlot(st, "Ntng1")
           featurePlot(st.enhanced, "Ntng1")
         </code></pre>
-                    </div>
-                    <img src="images/Image_20241029120419.png" alt="Description of image" style="width:600px; height:auto;">
+                </div>
+                <img src="images/Image_20241029120419.png" alt="Description of image" style="width:600px; height:auto;">
+
+                <!-- Spatially variable genes identification Section -->
+                <h2 id=Spatially variable genes identification" class="mt-5">Spatially variable genes identification</h2>
+                <p>
+                    Spatially variable gene identification aims to detect genes with distinct expression patterns across different spatial regions within a tissue.
+                    The process typically involves computational methods that leverage spatial information to assess variability.
+                </p>
+
+
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SVFCode" aria-expanded="false" aria-controls="SVFCode">
+                    Show/Hide Code
+                </button>
+
+                <!-- Collapsible code block -->
+                <div class="collapse" id="SVFCode">
+                    <pre><code class="language-r">
+
+    st_data.norm2 <- FindSpatiallyVariableFeatures(st_data.norm2, assay="SCT" , features=VariableFeatures(st_data.norm2)[1:1000],selection.method ="markvariogram" )
+                     spatial_features=st_data.norm2@assays$SCT@meta.features
+                     spatial_features_sorted <- spatial_features[order(spatial_features$markvariogram.spatially.variable.rank), ]
+#visualize the top 4 spatially variable genes.
+top.features=head(row.names(spatial_features_sorted) , 4)
+SpatialFeaturePlot(st_data.norm2, features = top.features, ncol = 2, alpha = c(0.1, 1))
+
+</code></pre>
+                </div>
+
+                <img src="images/SVF.png" alt="Description of image" style="width:600px; height:auto;">
 
 
 
-                    <!-- Giotto Section -->
-                    <h2 id="Giotto" class="mt-5">Giotto</h2>
 
-                    <h3>Create Giotto object</h3>
-                    <p>
-                        Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that includes expression data, spatial coordinates, and metadata for downstream analysis.
-                        This step provides the foundation for visualizing and analyzing spatial gene expression patterns in tissue samples.
-                    </p>
-                    <!-- Code block toggle on -->
-                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
-                        Show/Hide Code
-                    </button>
-                    <!-- Collapsible code block -->
-                    <div class="collapse" id="CreateGiottoobject">
-                        <pre><code class="language-r">
+                <!-- Giotto Section -->
+                <h2 id="Giotto" class="mt-5">Giotto</h2>
+
+                <h3>Create Giotto object</h3>
+                <p>
+                    Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that includes expression data, spatial coordinates, and metadata for downstream analysis.
+                    This step provides the foundation for visualizing and analyzing spatial gene expression patterns in tissue samples.
+                </p>
+                <!-- Code block toggle on -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="CreateGiottoobject">
+                    <pre><code class="language-r">
 library(Matrix)
 library(Seurat)
 library(Giotto)
@@ -378,29 +438,29 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
 
 
 </code></pre>
-                    </div>
+                </div>
 
-                    <h3>calculalate highly vairable genes</h3>
-                    <p>
-                        <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
+                <h3>calculalate highly vairable genes</h3>
+                <p>
+                    <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
 
-                        <!-- Code block toggle on -->
-                        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
-                            Show/Hide Code
-                        </button>
-                        <!-- Collapsible code block -->
-                        <div class="collapse" id="calculateHVG">
-                            <pre><code class="language-r">
+                    <!-- Code block toggle on -->
+                    <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#calculateHVG" aria-expanded="false" aria-controls="calculateHVG">
+                        Show/Hide Code
+                    </button>
+                    <!-- Collapsible code block -->
+                    <div class="collapse" id="calculateHVG">
+                        <pre><code class="language-r">
     giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
     giotto_obj=calculateHVG(giotto_object.norm)
 </code></pre>
 
 
 
-                        </div>
+                    </div>
 
 
-                </div>
+            </div>
                 </div>
     </div>
 
