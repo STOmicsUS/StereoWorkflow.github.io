@@ -59,7 +59,7 @@
                         <li class="nav-item"><a href="#Clustering" class="nav-link">Clustering</a></li>
                         <li class="nav-item"><a href="#Find Marker Genes" class="nav-link">Find Marker Genes</a></li>
                         <li class="nav-item"><a href="#Expression Enhancement" class="nav-link">Expression Enhancement</a></li>
-                        <li class="nav-item"><a href="#Spatially variable genes identification" class="nav-link">Spatially variable genes identification</a></li>
+                        <li class="nav-item"><a href="#Spatially Variable Genes Identification" class="nav-link">Spatially Variable Genes Identification</a></li>
                         <li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
                         <li class="nav-item"><a href="#Cell Type Annotation" class="nav-link">Cell Type Annotation</a></li>
                         <li class="nav-item"><a href="#Cell Segmentation" class="nav-link">Cell Segmentation</a></li>
@@ -114,7 +114,7 @@ pip install numpy pandas scanpy
                 <div class="collapse" id="loadRcode">
                     <pre><code class="language-r">
     library(Seurat)
-    data_path="./SS200000135TL_D1.tissue.gef_bin80.seurat.rds"
+    data_path="./SS200000135TL_D1.adjusted.cellbin.rds"
     st_data=readRDS(data_path)
 </code></pre>
                 </div>
@@ -179,7 +179,7 @@ st_data.filter=preProcessing(st_data)
 
 </code></pre>
                 </div>
-                <img src="images/Filtering.png" alt="Description of image" style="width:600px; height:auto;">
+                <img src="images/SS200000135TL_D1.adjusted.cellbin.filter_plot.png" alt="Description of image" style="width:600px; height:auto;">
 
 
 
@@ -195,7 +195,7 @@ st_data.filter=preProcessing(st_data)
                     scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene expression counts while considering factors such as sequencing depth and technical biases.
                 </p>
 
-                <img src="images/SCT.png" alt="Description of image" style="width:600px; height:auto;">
+                <img src="images/SS200000135TL_D1.adjusted.cellbin.SCT.png" alt="Description of image" style="width:600px; height:auto;">
 
                 <!-- Code block toggle button -->
                 <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
@@ -218,7 +218,7 @@ st_data.filter=preProcessing(st_data)
                     LogNormalize is a widely used normalization technique.This method typically involves scaling each cell's total gene expression to a fixed value (such as 10,000), followed by a log-transformation to reduce the impact of outliers and high-expression genes.
                 </p>
 
-                <img src="images/LogNormalize.png" alt="Description of image" style="width:600px; height:auto;">
+                <img src="images/SS200000135TL_D1.adjusted.cellbin.logNormalizaPlot.png" alt="Description of image" style="width:600px; height:auto;">
 
                 <!-- Code block toggle button -->
                 <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
@@ -343,8 +343,8 @@ p=SpatialFeaturePlot(object = st_data.norm2, features = rownames(first_genes)[1:
                 </div>
                 <img src="images/Image_20241029120419.png" alt="Description of image" style="width:600px; height:auto;">
 
-                <!-- Spatially variable genes identification Section -->
-                <h2 id=Spatially variable genes identification" class="mt-5">Spatially variable genes identification</h2>
+                <!-- Spatially Variable Genes Identification -->
+                <h2 id="Spatially Variable Genes Identification" class="mt-5">Spatially Variable Genes Identification</h2>
                 <p>
                     Spatially variable gene identification aims to detect genes with distinct expression patterns across different spatial regions within a tissue.
                     The process typically involves computational methods that leverage spatial information to assess variability.
