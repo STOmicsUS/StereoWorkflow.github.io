@@ -372,6 +372,33 @@ SpatialFeaturePlot(st_data.norm2, features = top.features, ncol = 2, alpha = c(0
 
                 <img src="images/SVF.png" alt="Description of image" style="width:600px; height:auto;">
 
+                <!-- Cell Type Annotation  -->
+                <h2 id="Cell Type Annotation" class="mt-5">Cell Type Annotation</h2>
+                <p>
+                   After clustered the spatial transcritpmics data and found the markers, we can use singleR to annotation cell types. 
+                    This involves leveraging single-cell reference datasets to identify cell types in spatially resolved data. 
+                    singR uses correlation-based methods and/or supervised machine learning approaches to map spatial spots to cell types in the reference dataset. 
+                    This process enables researchers to infer spatially resolved cellular compositions, revealing tissue architecture and functional organization at single-cell resolution.
+                </p>
+
+
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#AnnotationCode" aria-expanded="false" aria-controls="AnnotationCode">
+                    Show/Hide Code
+                </button>
+
+                <!-- Collapsible code block -->
+                <div class="collapse" id="AnnotationCode">
+                    <pre><code class="language-r">
+
+annotations <- SingleR(test = st_sce, ref = scRNA_sce, labels = scRNA_sce$ClusterName)
+st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@meta.data), rownames(annotations))]
+
+
+</code></pre>
+                </div>
+
+                <img src="images/SVF.png" alt="Description of image" style="width:600px; height:auto;">
 
 
 
@@ -458,6 +485,8 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
 
 
                     </div>
+
+
 
 
             </div>
