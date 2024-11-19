@@ -50,7 +50,7 @@
             <!-- Sidebar -->
             <div class="col-md-3">
                 <div class="sticky-top" style="top: 20px;">
-                    <h3>Navigation</h3>
+                    <h4>Basic Workflow-Seurat</h4>
                     <ul class="nav flex-column">
                         <li class="nav-item"><a href="#preparation" class="nav-link">Preparation</a></li>
                         <li class="nav-item"><a href="#loadData" class="nav-link">Load Data</a></li>
@@ -58,15 +58,22 @@
                         <li class="nav-item"><a href="#Normalization" class="nav-link">Normalization</a></li>
                         <li class="nav-item"><a href="#Clustering" class="nav-link">Clustering</a></li>
                         <li class="nav-item"><a href="#Find Marker Genes" class="nav-link">Find Marker Genes</a></li>
-                        <li class="nav-item"><a href="#Expression Enhancement" class="nav-link">Expression Enhancement</a></li>
                         <li class="nav-item"><a href="#Spatially Variable Genes Identification" class="nav-link">Spatially Variable Genes Identification</a></li>
-                        <li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
                         <li class="nav-item"><a href="#Cell Type Annotation" class="nav-link">Cell Type Annotation</a></li>
+                        <h4>==============</h4>
+                        <h4>Basic Workflow-Giotto</h4>
+                        <li class="nav-item"><a href="#Preparation" class="nav-link">Preparation</a></li>
+                        <li class="nav-item"><a href="#Create Giotto Object" class="nav-link">Create Giotto Object</a></li>
+                        <li class="nav-item"><a href="#Preprocessing" class="nav-link">Preprocessing</a></li>
+                        <li class="nav-item"><a href="#Dimension Reduction" class="nav-link">Dimension Reduction</a></li>
+                        <li class="nav-item"><a href="#Clustering" class="nav-link">Clustering</a></li>
+                        <li class="nav-item"><a href="#Find Marker Genes" class="nav-link">Find Marker Genes</a></li>
+                        <h4>==============</h4>
+                        <h4>Advanced Analysis </h4>
+                        <li class="nav-item"><a href="#Expression Enhancement" class="nav-link">Expression Enhancement</a></li>
+                        <li class="nav-item"><a href="#Spatial Domain Detection" class="nav-link">Spatial Domain Detection</a></li>
                         <li class="nav-item"><a href="#Cell Segmentation" class="nav-link">Cell Segmentation</a></li>
                         <li class="nav-item"><a href="#Cell cell communications" class="nav-link">Cell cell communications</a></li>
-                        <h4>==============</h4>
-                        <h4>Recommended tools</h4>
-                        <li class="nav-item"><a href="#Giotto" class="nav-link">Giotto</a></li>
                         <!-- More navigation items -->
                     </ul>
                 </div>
@@ -372,6 +379,33 @@ SpatialFeaturePlot(st_data.norm2, features = top.features, ncol = 2, alpha = c(0
 
                 <img src="images/SVF.png" alt="Description of image" style="width:600px; height:auto;">
 
+                <!-- Cell Type Annotation  -->
+                <h2 id="Cell Type Annotation" class="mt-5">Cell Type Annotation</h2>
+                <p>
+                   After clustered the spatial transcritpmics data and found the markers, we can use singleR to annotation cell types. 
+                    This involves leveraging single-cell reference datasets to identify cell types in spatially resolved data. 
+                    singR uses correlation-based methods and/or supervised machine learning approaches to map spatial spots to cell types in the reference dataset. 
+                    This process enables researchers to infer spatially resolved cellular compositions, revealing tissue architecture and functional organization at single-cell resolution.
+                </p>
+
+
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#AnnotationCode" aria-expanded="false" aria-controls="AnnotationCode">
+                    Show/Hide Code
+                </button>
+
+                <!-- Collapsible code block -->
+                <div class="collapse" id="AnnotationCode">
+                    <pre><code class="language-r">
+
+annotations <- SingleR(test = st_sce, ref = scRNA_sce, labels = scRNA_sce$ClusterName)
+st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@meta.data), rownames(annotations))]
+
+
+</code></pre>
+                </div>
+
+                <img src="images/SingleR.annotation.png" alt="Description of image" style="width:600px; height:auto;">
 
 
 
@@ -458,6 +492,8 @@ giotto_object=createGiottoObject(raw_exprs = expression, spatial_locs = coordina
 
 
                     </div>
+
+
 
 
             </div>
