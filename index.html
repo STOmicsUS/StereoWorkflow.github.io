@@ -414,40 +414,6 @@ de_markers <- FindAllMarkers(st_data.norm,group.by="leiden",only.pos=TRUE,logfc.
             </div>
             <img src="images/seurat/heatmap.png" alt="Description of image" style="width:600px; height:auto;">
 
- 
-                <!-- Spatially Variable Genes Identification -->
-                <h2 id="Spatially Variable Genes Identification" class="mt-5">Spatially Variable Genes Identification
-                </h2>
-                <p>
-                    Spatially variable gene identification aims to detect genes with distinct expression patterns across
-                    different spatial regions within a tissue.
-                    The process typically involves computational methods that leverage spatial information to assess
-                    variability.
-                </p>
-
-
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SVFCode"
-                    aria-expanded="false" aria-controls="SVFCode">
-                    Show/Hide Code
-                </button>
-
-                <!-- Collapsible code block -->
-                <div class="collapse" id="SVFCode">
-                    <pre><code class="language-r">
-
-st_data.norm2 <- FindSpatiallyVariableFeatures(st_data.norm2, assay="SCT" , features=VariableFeatures(st_data.norm2)[1:1000],selection.method ="markvariogram" )
-spatial_features=st_data.norm2@assays$SCT@meta.features
-spatial_features_sorted <- spatial_features[order(spatial_features$markvariogram.spatially.variable.rank), ]
-#visualize the top 4 spatially variable genes.
-top.features=head(row.names(spatial_features_sorted) , 4)
-SpatialFeaturePlot(st_data.norm2, features = top.features, ncol = 2, alpha = c(0.1, 1))
-
-</code></pre>
-                </div>
-
-                <img src="images/SVF.png" alt="Description of image" style="width:600px; height:auto;">
-
         <!-- Cell Type Annotation  -->
         <h2 id="Seurat cell type annotation" class="mt-5">Cell Type Annotation</h2>
         <p>
@@ -477,59 +443,60 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
 
 
 
-                <!-- Giotto Section -->
-                <h2 id="Giotto" class="mt-5">Giotto</h2>
+    <!-- Giotto Section -->
+    <h2 id="Giotto" class="mt-5">Giotto</h2>
+    <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
+    <p>
+    Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
+    includes expression data, spatial coordinates, and metadata for downstream analysis.
+    To create a Giotto object, we have to provide at least one matrix where genes are the row names and cells are the column names.
+    To add spatial information for cells or spots, we need to provide a matrix, data.table, or data.frame containing coordinates (CellID, X, Y).
+    </p>
+    <p>
+    We can get the expression matrix and coordinates directly from a seurat object
+    </p>
+    <p>
+    Addtionally, we can use <i>createGiottoInstructions</i> function in the Giotto to set global parameters for Giotto functions, 
+    including specifying the Python path, plot display options, and plot saving preferences. 
+    </p>
+        <!-- Code block toggle on -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
+        Show/Hide Code
+        </button>
+        <!-- Collapsible code block -->
+        <div class="collapse" id="CreateGiottoobject">
+            <pre><code class="language-r">
+library(Matrix)
+library(Giotto)
 
-                <h2 id="Create Giotto object" class="mt-5">Create Giotto Object</h2>
-                <p>
-                    Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
-                    includes expression data, spatial coordinates, and metadata for downstream analysis.
-                    This step provides the foundation for visualizing and analyzing spatial gene expression patterns in
-                    tissue samples.
-                </p>
-                <!-- Code block toggle on -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
-                    data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
-                    Show/Hide Code
-                </button>
-                <!-- Collapsible code block -->
-                <div class="collapse" id="CreateGiottoobject">
-                    <pre><code class="language-r">
-    library(Matrix)
-    library(Giotto)
-    use_python("/home/r-miniconda/envs/giotto_env/bin/python", required = TRUE)
-    #replace it with your python path
-    py_config()
+instructions = createGiottoInstructions(python_path = '/home/r-miniconda/envs/giotto_env/bin/python',
+save_plot = TRUE,
+save_dir = './')
 
-    instructions = createGiottoInstructions(python_path = '/home/r-miniconda/envs/giotto_env/bin/python',
-    save_plot = TRUE,
-    save_dir = './')
+out_path = "./"
+prefix="SS200000135TL_D1.adjusted.cellbin"
 
-    out_path = "./"
-    prefix="SS200000135TL_D1.adjusted.cellbin"
+st_data=readRDS("SS200000135TL_D1.adjusted.cellbin.filtered.rds")
 
-    st_data=readRDS("SS200000135TL_D1.adjusted.cellbin.filtered.rds")
+meta_data = st_data@meta.data
 
-    meta_data = st_data@meta.data
+coordinates = data.frame(
+ID = rownames(meta_data),
+X = meta_data$x,
+Y = meta_data$y
+)
 
-    coordinates = data.frame(
-    ID = rownames(meta_data),
-    X = meta_data$x,
-    Y = meta_data$y
-    )
+expression_matrix = st_data@assays$Spatial@counts
 
-    expression_matrix = st_data@assays$Spatial@counts
+metadata = data.frame(
+CellID = rownames(meta_data),
+nCount = meta_data$nCount_Spatial,
+nFeature = meta_data$nCount_Spatial,
+mito=meta_data$percent.mito,
+x=meta_data$x,
+y=meta_data$y)
 
-    metadata = data.frame(
-    CellID = rownames(meta_data),
-    nCount = meta_data$nCount_Spatial,
-    nFeature = meta_data$nCount_Spatial,
-    mito=meta_data$percent.mito,
-    x=meta_data$x,
-    y=meta_data$y
-    )
-
-    giotto_object=createGiottoObject(raw_exprs = expression_matrix, spatial_locs = coordinates,cell_metadata=metadata,instructions = instructions)
+giotto_object=createGiottoObject(raw_exprs = expression_matrix, spatial_locs = coordinates,cell_metadata=metadata,instructions = instructions)
 
 </code></pre>
                 </div>
@@ -545,8 +512,8 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
                 <!-- Collapsible code block -->
                 <div class="collapse" id="GiottoNorm">
                     <pre><code class="language-r">
-    giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
-    giotto_obj=calculateHVG(giotto_object.norm)
+giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
+giotto_obj=calculateHVG(giotto_object.norm)
 </code></pre>
                 </div>
 
