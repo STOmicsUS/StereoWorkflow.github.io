@@ -436,6 +436,7 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
 
 
     <!-- Giotto Section -->
+<<<<<<< HEAD
         <h2 id="Giotto" class="mt-5">Giotto</h2>
         <!-- Create giotto object Section -->
         <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
@@ -452,6 +453,23 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
         Addtionally, we can use <i>createGiottoInstructions</i> function in the Giotto to set global parameters for Giotto functions, 
         including specifying the Python path, plot display options, and plot saving preferences. 
         </p>
+=======
+    <h2 id="Giotto" class="mt-5">Giotto</h2>
+    <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
+    <p>
+    Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
+    includes expression data, spatial coordinates, and metadata for downstream analysis.
+    To create a Giotto object, we have to provide at least one matrix where genes are the row names and cells are the column names.
+    To add spatial information for cells or spots, we need to provide a matrix, data.table, or data.frame containing coordinates (CellID, X, Y).
+    </p>
+    <p>
+    We can get the expression matrix and coordinates directly from a seurat object
+    </p>
+    <p>
+    Addtionally, we can use <i>createGiottoInstructions</i> function in the Giotto to set global parameters for Giotto functions, 
+    including specifying the Python path, plot display options, and plot saving preferences. 
+    </p>
+>>>>>>> f11764816aaa2da8ef2ea7954216aeb62199b684
         <!-- Code block toggle on -->
         <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
         Show/Hide Code
@@ -461,6 +479,7 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
             <pre><code class="language-r">
 library(Matrix)
 library(Giotto)
+<<<<<<< HEAD
 
 instructions = createGiottoInstructions(python_path = '/home/r-miniconda/envs/giotto_env/bin/python',
 save_plot = TRUE,
@@ -480,6 +499,37 @@ Y = meta_data$y
 )
 
 expression_matrix = st_data@assays$Spatial@counts
+=======
+
+instructions = createGiottoInstructions(python_path = '/home/r-miniconda/envs/giotto_env/bin/python',
+save_plot = TRUE,
+save_dir = './')
+
+out_path = "./"
+prefix="SS200000135TL_D1.adjusted.cellbin"
+
+st_data=readRDS("SS200000135TL_D1.adjusted.cellbin.filtered.rds")
+
+meta_data = st_data@meta.data
+
+coordinates = data.frame(
+ID = rownames(meta_data),
+X = meta_data$x,
+Y = meta_data$y
+)
+
+expression_matrix = st_data@assays$Spatial@counts
+
+metadata = data.frame(
+CellID = rownames(meta_data),
+nCount = meta_data$nCount_Spatial,
+nFeature = meta_data$nCount_Spatial,
+mito=meta_data$percent.mito,
+x=meta_data$x,
+y=meta_data$y)
+
+giotto_object=createGiottoObject(raw_exprs = expression_matrix, spatial_locs = coordinates,cell_metadata=metadata,instructions = instructions)
+>>>>>>> f11764816aaa2da8ef2ea7954216aeb62199b684
 
 metadata = data.frame(
 CellID = rownames(meta_data),
@@ -527,9 +577,15 @@ giotto_obj=calculateHVG(giotto_object.norm)
                 <!-- Collapsible code block -->
                 <div class="collapse" id="GiottoDimensionReduction">
                     <pre><code class="language-r">
+<<<<<<< HEAD
 giotto_object=runPCA(gobject =giotto_object )
 giotto_object=runUMAP(gobject = giotto_object)
                     </code></pre>
+=======
+giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
+giotto_obj=calculateHVG(giotto_object.norm)
+</code></pre>
+>>>>>>> f11764816aaa2da8ef2ea7954216aeb62199b684
                 </div>
         <!-- Giotto clustering Section -->     
         <h2 id="Giotto clustering" class="mt-5">Clustering</h2>
