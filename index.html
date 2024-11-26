@@ -67,27 +67,20 @@
                         <li class="nav-item"><a href="#Seurat loadData" class="nav-link">Load Data</a></li>
                         <li class="nav-item"><a href="#Seurat preprocessing" class="nav-link">Processing</a></li>
                         <li class="nav-item"><a href="#Seurat normalization" class="nav-link">Normalization</a></li>
-                        <li class="nav-item"><a href="#Seurat dimensions reduction" class="nav-link">Dimensions
-                                reduction</a></li>
+                        <li class="nav-item"><a href="#Seurat dimensions reduction" class="nav-link">Dimensions reduction</a></li>
                         <li class="nav-item"><a href="#Seurat clustering" class="nav-link">Clustering</a></li>
-                        <li class="nav-item"><a href="#Seurat find marker genes" class="nav-link">Find marker genes</a>
-                        </li>
-                        <li class="nav-item"><a href="#Seurat cell type annotation" class="nav-link">Cell type
-                                annotation</a></li>
+                        <li class="nav-item"><a href="#Seurat find marker genes" class="nav-link">Find marker genes</a></li>
+                        <li class="nav-item"><a href="#Seurat integration of scRNA-seq data" class="nav-link">Integration of scRNA-seq data</a></li>
+                        <li class="nav-item"><a href="#Seurat cell type annotation" class="nav-link">Cell type annotation</a></li>
                     </ul>
                     <h4>Giotto basic Workflow</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
-                        <li class="nav-item"><a href="#Giotto create giotto object" class="nav-link">Create Giotto
-                                Object</a></li>
-                        <li class="nav-item"><a href="#Giotto normalization and HVG"
-                                class="nav-link>Normalization and HVG" </a></li>
-                        <li class="nav-item"><a href="#Giotto dimension Reduction" class="nav-link">Dimension
-                                Reduction</a></li>
+                        <li class="nav-item"><a href="#Giotto create giotto object" class="nav-link">Create Giotto object</a></li>
+                        <li class="nav-item"><a href="#Giotto normalization and HVG" class="nav-link">Normalization and HVG</a></li>
+                        <li class="nav-item"><a href="#Giotto dimension reduction" class="nav-link">Dimension reduction</a></li>
                         <li class="nav-item"><a href="#Giotto clustering" class="nav-link">Clustering</a></li>
-                        <li class="nav-item"><a href="#Giotto find Marker Genes" class="nav-link">Find Marker Genes</a>
-                        </li>
-                        <li class="nav-item"><a href="#Giotto cell type annotation" class="nav-link">Cell type
-                                annotation</a></li>
+                        <li class="nav-item"><a href="#Giotto find marker genes" class="nav-link">Find marker genes</a></li>
+                        <li class="nav-item"><a href="#Giotto integration of scRNA-seq data" class="nav-link">Integration of scRNA-seq data</a></li>
                     </ul>
                     <h4>Advanced Analysis</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
@@ -414,6 +407,42 @@ de_markers <- FindAllMarkers(st_data.norm,group.by="leiden",only.pos=TRUE,logfc.
             </div>
             <img src="images/seurat/heatmap.png" alt="Description of image" style="width:600px; height:auto;">
 
+
+        <!-- Integration of scRNA-seq data section  -->
+        <h2 id="Seurat integration of scRNA-seq data" class="mt-5">Integration of scRNA-seq data</h2>
+        <p>
+        By leveraging Seurat's integration workflow, scRNA-seq datasets can be aligned with spatial data, allowing the identification of spatially resolved cell types or states. 
+        This process typically involves identifying shared features, such as gene expression patterns, to anchor scRNA-seq data to the spatial domain. 
+        The combined analysis provides a comprehensive view of gene expression in the spatial tissue architecture, facilitating insights into tissue organization and cellular interactions.
+        </p>
+
+
+        <!-- Code block toggle button -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratIntegrationRCode" aria-expanded="false" aria-controls="SeuratIntegrationRCode">
+        Show/Hide Code
+        </button>
+
+        <!-- Collapsible code block -->
+        <div class="collapse" id="SeuratIntegrationRCode">
+            <pre><code class="language-r">
+SingleCellData=readRDS("Mouse_brain_ref.anndata075.SCT.rds")
+markers=read.csv(paste0(data_path,"mouse.brainMarker.csv"),header = FALSE)
+markers=unique(markers$V2)
+anchors = FindTransferAnchors(reference=SingleCellData, query = st_data.norm2,normalization.method = "SCT", features = markers)
+predictions.assay <- TransferData(anchorset = anchors, refdata = SingleCellData$ClusterName, prediction.assay=TRUE, weight.reduction=st_data.norm2[["pca"]], dims=1:30)
+non.mapping <- c()
+for(i in 1:dim(predictions.assay)[1]){ if(sum(predictions.assay@data[i,])==0) non.mapping <- c(non.mapping, rownames(predictions.assay)[i])}
+predictions.assay@misc$non.mapping <- non.mapping
+predictions.assay@misc$mapping <- setdiff(levels(as.factor(SingleCellData$ClusterName )), non.mapping)
+st_data.norm2[["predictions"]] <- predictions.assay
+
+levels(as.factor(SingleCellData$ClusterName))
+
+                    </code></pre>
+</div>
+<img src="images/seurat/seurat_integration.png" alt="Description of image" style="width:600px; height:auto;">
+
+
         <!-- Cell Type Annotation  -->
         <h2 id="Seurat cell type annotation" class="mt-5">Cell Type Annotation</h2>
         <p>
@@ -444,21 +473,22 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
 
 
     <!-- Giotto Section -->
-    <h2 id="Giotto" class="mt-5">Giotto</h2>
-    <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
-    <p>
-    Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
-    includes expression data, spatial coordinates, and metadata for downstream analysis.
-    To create a Giotto object, we have to provide at least one matrix where genes are the row names and cells are the column names.
-    To add spatial information for cells or spots, we need to provide a matrix, data.table, or data.frame containing coordinates (CellID, X, Y).
-    </p>
-    <p>
-    We can get the expression matrix and coordinates directly from a seurat object
-    </p>
-    <p>
-    Addtionally, we can use <i>createGiottoInstructions</i> function in the Giotto to set global parameters for Giotto functions, 
-    including specifying the Python path, plot display options, and plot saving preferences. 
-    </p>
+        <h2 id="Giotto" class="mt-5">Giotto</h2>
+        <!-- Create giotto object Section -->
+        <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
+        <p>
+        Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
+        includes expression data, spatial coordinates, and metadata for downstream analysis.
+        To create a Giotto object, we have to provide at least one matrix where genes are the row names and cells are the column names.
+        To add spatial information for cells or spots, we need to provide a matrix, data.table, or data.frame containing coordinates (CellID, X, Y).
+        </p>
+        <p>
+        We can get the expression matrix and coordinates directly from a seurat object
+        </p>
+        <p>
+        Addtionally, we can use <i>createGiottoInstructions</i> function in the Giotto to set global parameters for Giotto functions, 
+        including specifying the Python path, plot display options, and plot saving preferences. 
+        </p>
         <!-- Code block toggle on -->
         <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#CreateGiottoobject" aria-expanded="false" aria-controls="CreateGiottoobject">
         Show/Hide Code
@@ -498,26 +528,131 @@ y=meta_data$y)
 
 giotto_object=createGiottoObject(raw_exprs = expression_matrix, spatial_locs = coordinates,cell_metadata=metadata,instructions = instructions)
 
-</code></pre>
-                </div>
-                <h2 id="Normalization and HVG" class="mt-5">Normalization and HVG</h2>
-
-                <img src="images/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
-
+                </code></pre>
+            </div>
+        <!-- Giotto normalization and HVG Section -->     
+            <h2 id="Giotto normalization and HVG" class="mt-5">Normalization and HVG</h2>
+            <p>Giotto provides two normalization methods.</p>
+            <p>
+            <b>1.Standard</b>:Normalization for total library size and scaling;Log transformation of data;Z-scoring of data by genes and/or cells.</p>
+            <b>2.osmFISH</b>:Each gene divide the total gene count and multiply by the total number of genes.
+            Each cell divide the normalized gene counts by the total counts per cell and multiply by the total number of cells.</p>
+            <p>Here we use standard normalization<p>
+            <p>After normalization, we can calculate the highly variable genes. In Giotto, we use the default method, high COV within groups. In this method,
+            Genes are binned into groups based on average expression and the COV for each gene is converted into a z-score. 
+            Genes with a z-score higher than the threshold are considered highly variable.</p>
+            <!-- Code block toggle on -->
+            <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoNorm" aria-expanded="false" aria-controls="GiottoNorm">
+            Show/Hide Code
+            </button>
+            <!-- Collapsible code block -->
+            <div class="collapse" id="GiottoNorm">
+                <pre><code class="language-r">
+giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T,norm_methods="standard")
+giotto_obj=calculateHVG(giotto_object.norm)
+                </code></pre>
+            </div>
+            <img src="images/Giotto/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
+        
+        <!-- Giotto dimension Reduction -->     
+            <h2 id="Giotto dimension reduction" class="mt-5">Dimension Reduction</h2>
+                <p>Giotto provides three dimension reduction methods: PCA, UMAP and tSNE</p>
                 <!-- Code block toggle on -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
-                    data-target="#GiottoNorm" aria-expanded="false" aria-controls="GiottoNorm">
-                    Show/Hide Code
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoDimensionReduction" aria-expanded="false" aria-controls="GiottoDimensionReduction">
+                Show/Hide Code
                 </button>
                 <!-- Collapsible code block -->
-                <div class="collapse" id="GiottoNorm">
+                <div class="collapse" id="GiottoDimensionReduction">
                     <pre><code class="language-r">
-giotto_object.norm=normalizeGiotto(gobject = giotto_object,verbose = T)
-giotto_obj=calculateHVG(giotto_object.norm)
-</code></pre>
+giotto_object=runPCA(gobject =giotto_object )
+giotto_object=runUMAP(gobject = giotto_object)
+                    </code></pre>
                 </div>
+        <!-- Giotto clustering Section -->     
+        <h2 id="Giotto clustering" class="mt-5">Clustering</h2>
+        <p>First we create a shared nearest neighbor (sNN) network using the normalized expression values,
+            focusing on the first 30 dimensions with 50 neighbors per cell.
+            Apply Leiden and Louvain clustering on the sNN network, assigning cluster labels to Leiden_clus and Louvain_clus, respectively.
+        </p>
+        <p><b>Tips</b>:Choose the parameter k depends on the dataset's complexity and size:
+            For small datasets eg. less than 10,000 cells: Use smaller k (e.g., 10–30) to focus on local neighborhoods.
+            For large datasets : Use larger k (e.g., 30–100) to better capture global patterns.
+            Test different k values and visualize the results to ensure meaningful clustering.
+        </p>
+        <!-- Code block toggle on -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#Giottoclustering" aria-expanded="false" aria-controls="Giottoclustering">
+        Show/Hide Code
+        </button>
+        <!-- Collapsible code block -->
+        <div class="collapse" id="Giottoclustering">
+            <pre><code class="language-r">
+giotto_object=createNearestNetwork(gobject = giotto_object,expression_values = "normalized",
+                                type = "sNN",dimensions_to_use = 1:30,k=50)
+giotto_object=doLeidenCluster(giotto_object,name="leiden_clus",nn_network_to_use = "sNN")
+giotto_object=doLouvainCluster(giotto_object,name="Louvain_clus",version = c("community", "multinet"),nn_network_to_use = "sNN")
 
-               <!-- Expression Enhancement -->
+            </code></pre>
+        </div>
+        <img src="images/Giotto/Clusters.png" alt="Clustering" style="width:600px; height:auto;">         
+        <p>We can evaluate the gene expression correlation between clusters. </p>
+        <!-- Code block toggle on -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoHeatmap" aria-expanded="false" aria-controls="GiottoHeatmap">
+        Show/Hide Code
+        </button>
+        <!-- Collapsible code block -->
+        <div class="collapse" id="GiottoHeatmap">
+            <pre><code class="language-r">
+hvg_genes <- giotto_object@gene_metadata[giotto_object@gene_metadata$hvg == "yes", ]$gene_ID
+showClusterHeatmap(giotto_object,cluster_column = "leiden_clus",expression_values = "normalized",genes = hvg_genes)                 
+            </code></pre>
+        </div>
+        <img src="images/Giotto/Leiden_heatmap.png" alt="Clustering" style="width:600px; height:auto;">      
+        
+        <!-- Giotto find marker gene Section -->     
+        <h2 id="Giotto find marker genes" class="mt-5">Find marker genes</h2>
+        <p>Giotto provides three different methods to detect cluster specific marker genes: scran, gini and mast. scran is generally recommended in spatial transcriptomics data.
+        </p>
+        <!-- Code block toggle on -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoFindMarkerGene" aria-expanded="false" aria-controls="GiottoFindMarkerGene">
+        Show/Hide Code
+        </button>
+        <!-- Collapsible code block -->
+        <div class="collapse" id="GiottoFindMarkerGene">
+            <pre><code class="language-r">
+scran_markers =findScranMarkers_one_vs_all(giotto_object,expression_values = "normalized",cluster_column ="leiden_clus",pval = 0.01,logFC = 0.5,method = "scran",verbose=TRUE)
+            </code></pre>
+        </div>
+
+        <!-- Giotto Integration section -->     
+        <h2 id="Giotto integration of scRNA-seq data" class="mt-5">Integration of scRNA-seq data</h2>
+    
+        <!-- Code block toggle on -->
+        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoFIntegrationCode" aria-expanded="false" aria-controls="GiottoFIntegrationCode">
+        Show/Hide Code
+        </button>
+        <!-- Collapsible code block -->
+        <div class="collapse" id="GiottoFIntegrationCode">
+            <pre><code class="language-r">
+SingleCellData=readRDS("Reference/Mouse_brain_ref.anndata075.rds")
+
+sc_sign_matrix = makeSignMatrixRank(
+as.matrix(SingleCellData@assays$RNA@data),
+SingleCellData$ClusterName,
+ties_method = "random",
+gobject = giotto_obj
+)
+                
+giotto_obj <- runSpatialEnrich(
+giotto_obj,
+enrich_method = c("rank"),
+sign_matrix = sc_sign_matrix,
+expression_values = c("normalized"),
+                )            
+            </code></pre>
+        </div>
+
+
+            <!-- Expression Enhancement -->
                <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
                <h3>BayesSpace</h3>
                <!-- Code block toggle button -->
