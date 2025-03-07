@@ -394,6 +394,21 @@ st_data.norm <- FindClusters(st_data.norm,algorithm=2,cluster.name="louvain2",ve
         each group.These marker genes can then be used to annotate clusters, link them to known cell types, and explore
         spatial patterns of gene activity within the tissue architecture.
         </p>
+        <p>
+        <b>Tips:</b> This step can speed up significantly by using presto package. If you have not install it, you should see the prompt in R:
+        <i>For a (much!) faster implementation of the Wilcoxon Rank Sum Test,
+        (default method for FindMarkers) please install the presto package
+        --------------------------------------------
+        install.packages('devtools')
+        devtools::install_github('immunogenomics/presto')
+        --------------------------------------------
+        After installation of presto, Seurat will automatically use the more
+        efficient implementation (no further action necessary).
+        This message will be shown once per session</i>
+
+        Follow the prompt in R and install the presto package, and seurat will use it automatically.
+
+        </p>
             <!-- Code block toggle button -->
             <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#MarkerGeneCode" aria-expanded="false" aria-controls="MarkerGeneCode">
             Show/Hide Code
