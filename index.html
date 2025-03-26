@@ -34,10 +34,17 @@
             padding: 0;
             margin: 0;
         }
+
+        .nav-link.active {
+            color: red !important;
+            font-weight: bold;
+            background-color: #ffecec;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#sidebar-nav" data-offset="100">
     <nav class="navbar navbar-expand-lg navbar-light bg-white">
         <div class="container">
             <a class="navbar-brand" href="#">StereoSeq Data Workflow</a>
@@ -57,42 +64,42 @@
         <div class="row">
             <!-- Sidebar -->
             <div class="col-md-3">
-                <div class="sticky-top" style="top: 20px;">
+                <nav id="sidebar-nav" class="sticky-top navbar-nav" style="top: 20px;">
                     <h4>Preparation</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
                         <li class="nav-item"><a href="#preparation" class="nav-link">Preparation</a></li>
                     </ul>
                     <h4>Seurat Basic Workflow</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
-                        <li class="nav-item"><a href="#Seurat loadData" class="nav-link">Load Data</a></li>
-                        <li class="nav-item"><a href="#Seurat preprocessing" class="nav-link">Processing</a></li>
-                        <li class="nav-item"><a href="#Seurat normalization" class="nav-link">Normalization</a></li>
-                        <li class="nav-item"><a href="#Seurat dimensions reduction" class="nav-link">Dimensions reduction</a></li>
-                        <li class="nav-item"><a href="#Seurat clustering" class="nav-link">Clustering</a></li>
-                        <li class="nav-item"><a href="#Seurat find marker genes" class="nav-link">Find marker genes</a></li>
-                        <li class="nav-item"><a href="#Seurat integration of scRNA-seq data" class="nav-link">Integration of scRNA-seq data</a></li>
-                        <li class="nav-item"><a href="#Seurat cell type annotation" class="nav-link">Cell type annotation</a></li>
+                        <li class="nav-item"><a href="#Seurat-loadData" class="nav-link">Load Data</a></li>
+                        <li class="nav-item"><a href="#Seurat-preprocessing" class="nav-link">Processing</a></li>
+                        <li class="nav-item"><a href="#Seurat-normalization" class="nav-link">Normalization</a></li>
+                        <li class="nav-item"><a href="#Seurat-dimensions-reduction" class="nav-link">Dimensions reduction</a></li>
+                        <li class="nav-item"><a href="#Seurat-clustering" class="nav-link">Clustering</a></li>
+                        <li class="nav-item"><a href="#Seurat-find-marker-genes" class="nav-link">Find marker genes</a></li>
+                        <li class="nav-item"><a href="#Seurat-integration-of-scRNA-seq-data" class="nav-link">Integration of scRNA-seq data</a></li>
+                        <li class="nav-item"><a href="#Seurat-cell-type-annotation" class="nav-link">Cell type annotation</a></li>
                     </ul>
                     <h4>Giotto basic Workflow</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
-                        <li class="nav-item"><a href="#Giotto create giotto object" class="nav-link">Create Giotto object</a></li>
-                        <li class="nav-item"><a href="#Giotto normalization and HVG" class="nav-link">Normalization and HVG</a></li>
-                        <li class="nav-item"><a href="#Giotto dimension reduction" class="nav-link">Dimension reduction</a></li>
-                        <li class="nav-item"><a href="#Giotto clustering" class="nav-link">Clustering</a></li>
-                        <li class="nav-item"><a href="#Giotto find marker genes" class="nav-link">Find marker genes</a></li>
-                        <li class="nav-item"><a href="#Giotto integration of scRNA-seq data" class="nav-link">Integration of scRNA-seq data</a></li>
+                        <li class="nav-item"><a href="#Giotto-create-giotto-object" class="nav-link">Create Giotto object</a></li>
+                        <li class="nav-item"><a href="#Giotto-normalization-and-HVG" class="nav-link">Normalization and HVG</a></li>
+                        <li class="nav-item"><a href="#Giotto-dimension-reduction" class="nav-link">Dimension reduction</a></li>
+                        <li class="nav-item"><a href="#Giotto-clustering" class="nav-link">Clustering</a></li>
+                        <li class="nav-item"><a href="#Giotto-find-marker-genes" class="nav-link">Find marker genes</a></li>
+                        <li class="nav-item"><a href="#Giotto-integration-of-scRNA-seq-data" class="nav-link">Integration of scRNA-seq data</a></li>
                     </ul>
                     <h4>Advanced Analysis</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
-                        <li class="nav-item"><a href="#Expression enhancement" class="nav-link">Expression
+                        <li class="nav-item"><a href="#Expression-enhancement" class="nav-link">Expression
                                 enhancement</a></li>
-                        <li class="nav-item"><a href="#Spatial domain detection" class="nav-link">Spatial domain
+                        <li class="nav-item"><a href="#Spatial-domain-detection" class="nav-link">Spatial domain
                                 detection</a></li>
-                        <li class="nav-item"><a href="#Cell segmentation" class="nav-link">Cell segmentation</a></li>
-                        <li class="nav-item"><a href="#Cell cell communications" class="nav-link">Cell cell
+                        <li class="nav-item"><a href="#Cell-segmentation" class="nav-link">Cell-segmentation</a></li>
+                        <li class="nav-item"><a href="#Cell-cell-communications" class="nav-link">Cell cell
                                 communications</a></li>
                     </ul>
-                </div>
+                </nav>
             </div>
 
 
@@ -127,7 +134,7 @@ pip install numpy pandas scanpy
                 </div>
 
                 <!-- loadData Section -->
-                <h2 id="Seurat loadData" class="mt-5">Load data</h2>
+                <h2 id="Seurat-loadData" class="mt-5">Load data</h2>
                 <p>Load data in R from rds file</p>
                 <!-- Code block toggle button -->
                 <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
@@ -145,7 +152,7 @@ st_data=readRDS(data_path)
                 </div>
 
                 <!-- Preprocessing Section -->
-                <h2 id="Seurat preprocessing" class="mt-5">Processing</h2>
+                <h2 id="Seurat-preprocessing" class="mt-5">Processing</h2>
                 <h3>Filtering low quality spots</h3>
                 <p>
                     In spatial transcriptomics data, filtering low-quality spots is essential to ensure reliable
@@ -219,7 +226,7 @@ st_data.filter=preProcessing(st_data)
                     style="width:600px; height:auto;">
 
                 <!-- Normalization Section -->
-                <h2 id="Seurat normalization" class="mt-5">Normalization</h2>
+                <h2 id="Seurat-normalization" class="mt-5">Normalization</h2>
                 <p>
                     Normalization in spatial transcriptomics data is essential to account for technical variability and
                     ensure that differences in gene expression across spatial locations reflect true biological
@@ -267,7 +274,7 @@ st_data <- NormalizeData(st_data.filter,assay='RNA' ,normalization.method="LogNo
                     style="width:600px; height:auto;">
 
                 <!-- Dimensions reduction Section -->
-                <h2 id="Seurat dimensions reduction" class="mt-5">Dimensions reduction</h2>
+                <h2 id="Seurat-dimensions-reduction" class="mt-5">Dimensions reduction</h2>
                 <p>
                     The spatial transcriptomics datasets often contain tens of thousands of genes across tens of
                     thousands of spots or cells.
@@ -316,7 +323,7 @@ st_data <- RunUMAP(object = st_data, dims = 1:30)
                 </div>
 
                 <!-- Clustering Section -->
-                <h2 id="Seurat clustering" class="mt-5">Clustering</h2>
+                <h2 id="Seurat-clustering" class="mt-5">Clustering</h2>
                 <p>
                     Clustering is a technique used to identify groups of cells with similar gene expression profiles,
                     providing insights into the cellular composition and spatial organization of tissues.
@@ -383,7 +390,7 @@ st_data.norm <- FindClusters(st_data.norm,algorithm=2,cluster.name="louvain2",ve
                 </div>
 
         <!-- Find Marker Genes Section -->
-        <h2 id="Seurat find marker genes" class="mt-5">Find Marker Genes</h2>
+        <h2 id="Seurat-find-marker-genes" class="mt-5">Find Marker Genes</h2>
         <p>
         After clustering cells, finding marker genes is a crucial step for identifying unique gene
         expression profiles that define each cluster.
@@ -423,7 +430,7 @@ de_markers <- FindAllMarkers(st_data.norm,group.by="leiden",only.pos=TRUE,logfc.
 
 
         <!-- Integration of scRNA-seq data section  -->
-        <h2 id="Seurat integration of scRNA-seq data" class="mt-5">Integration of scRNA-seq data</h2>
+        <h2 id="Seurat-integration-of-scRNA-seq-data" class="mt-5">Integration of scRNA-seq data</h2>
         <p>
         By leveraging Seurat's integration workflow, scRNA-seq datasets can be aligned with spatial data, allowing the identification of spatially resolved cell types or states. 
         This process typically involves identifying shared features, such as gene expression patterns, to anchor scRNA-seq data to the spatial domain. 
@@ -458,7 +465,7 @@ levels(as.factor(SingleCellData$ClusterName))
 
 
         <!-- Cell Type Annotation  -->
-        <h2 id="Seurat cell type annotation" class="mt-5">Cell Type Annotation</h2>
+        <h2 id="Seurat-cell-type-annotation" class="mt-5">Cell Type Annotation</h2>
         <p>
         After clustered the spatial transcritpmics data and found the markers, we can use singleR to
         annotation cell types.
@@ -489,7 +496,7 @@ st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@
     <!-- Giotto Section -->
         <h2 id="Giotto" class="mt-5">Giotto</h2>
         <!-- Create giotto object Section -->
-        <h2 id="Giotto create giotto object" class="mt-5">Create Giotto Object</h2>
+        <h2 id="Giotto-create-giotto-object" class="mt-5">Create Giotto Object</h2>
         <p>
         Giotto allows users to initialize a spatial transcriptomics dataset, setting up a structure that
         includes expression data, spatial coordinates, and metadata for downstream analysis.
@@ -544,8 +551,8 @@ giotto_object=createGiottoObject(raw_exprs = expression_matrix, spatial_locs = c
 
                 </code></pre>
             </div>
-        <!-- Giotto normalization and HVG Section -->     
-            <h2 id="Giotto normalization and HVG" class="mt-5">Normalization and HVG</h2>
+        <!-- Giotto-normalization-and-HVG Section -->     
+            <h2 id="Giotto-normalization-and-HVG" class="mt-5">Normalization and HVG</h2>
             <p>Giotto provides two normalization methods.</p>
             <p>
             <b>1.Standard</b>:Normalization for total library size and scaling;Log transformation of data;Z-scoring of data by genes and/or cells.</p>
@@ -568,8 +575,8 @@ giotto_obj=calculateHVG(giotto_object.norm)
             </div>
             <img src="images/Giotto/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">
         
-        <!-- Giotto dimension Reduction -->     
-            <h2 id="Giotto dimension reduction" class="mt-5">Dimension Reduction</h2>
+        <!-- Giotto-dimension-reduction -->     
+            <h2 id="Giotto-dimension-reduction" class="mt-5">Dimension Reduction</h2>
                 <p>Giotto provides three dimension reduction methods: PCA, UMAP and tSNE</p>
                 <!-- Code block toggle on -->
                 <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoDimensionReduction" aria-expanded="false" aria-controls="GiottoDimensionReduction">
@@ -582,8 +589,8 @@ giotto_object=runPCA(gobject =giotto_object )
 giotto_object=runUMAP(gobject = giotto_object)
                     </code></pre>
                 </div>
-        <!-- Giotto clustering Section -->     
-        <h2 id="Giotto clustering" class="mt-5">Clustering</h2>
+        <!-- Giotto-clustering Section -->     
+        <h2 id="Giotto-clustering" class="mt-5">Clustering</h2>
         <p>First we create a shared nearest neighbor (sNN) network using the normalized expression values,
             focusing on the first 30 dimensions with 50 neighbors per cell.
             Apply Leiden and Louvain clustering on the sNN network, assigning cluster labels to Leiden_clus and Louvain_clus, respectively.
@@ -623,9 +630,8 @@ showClusterHeatmap(giotto_object,cluster_column = "leiden_clus",expression_value
         <img src="images/Giotto/Leiden_heatmap.png" alt="Clustering" style="width:600px; height:auto;">      
         
         <!-- Giotto find marker gene Section -->     
-        <h2 id="Giotto find marker genes" class="mt-5">Find marker genes</h2>
-        <p>Giotto provides three different methods to detect cluster specific marker genes: scran, gini and mast. scran is generally recommended in spatial transcriptomics data.
-        </p>
+        <h2 id="Giotto-find-marker-genes" class="mt-5">Find marker genes</h2>
+        <p>Giotto provides three different methods to detect cluster specific marker genes: scran, gini and mast. scran is generally recommended in spatial transcriptomics data.</p>
         <!-- Code block toggle on -->
         <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoFindMarkerGene" aria-expanded="false" aria-controls="GiottoFindMarkerGene">
         Show/Hide Code
@@ -638,7 +644,7 @@ scran_markers =findScranMarkers_one_vs_all(giotto_object,expression_values = "no
         </div>
 
         <!-- Giotto Integration section -->     
-        <h2 id="Giotto integration of scRNA-seq data" class="mt-5">Integration of scRNA-seq data</h2>
+        <h2 id="Giotto-integration-of-scRNA-seq-data" class="mt-5">Integration of scRNA-seq data</h2>
     
         <!-- Code block toggle on -->
         <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoFIntegrationCode" aria-expanded="false" aria-controls="GiottoFIntegrationCode">
@@ -666,8 +672,8 @@ expression_values = c("normalized"),
         </div>
 
 
-            <!-- Expression Enhancement -->
-               <h2 id="Expression Enhancement" class="mt-5">Expression Enhancement</h2>
+            <!-- Expression-enhancement -->
+               <h2 id="Expression-enhancement" class="mt-5">Expression enhancement</h2>
                <h3>BayesSpace</h3>
                <!-- Code block toggle button -->
                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
