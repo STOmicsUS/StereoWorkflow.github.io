@@ -123,56 +123,7 @@
                 <div include-html="HTML/Seurat-loadData.html"></div>
                 <div include-html="HTML/Processing.html"></div>
 
-
-
-
-                <!-- Normalization Section -->
-                <h2 id="Seurat-normalization" class="mt-5">Normalization</h2>
-                <p>
-                    Normalization in spatial transcriptomics data is essential to account for technical variability and
-                    ensure that differences in gene expression across spatial locations reflect true biological
-                    variation rather than artifacts.
-                </p>
-                <h3>scTransform</h3>
-                <p>
-                    scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene
-                    expression counts while considering factors such as sequencing depth and technical biases.
-                </p>
-
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
-                    data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
-                    Show/Hide Code
-                </button>
-
-                <!-- Collapsible code block -->
-                <div class="collapse" id="scTransformCode">
-                    <pre><code class="language-r">
-st_data.norm <- SCTransform(st_data.filter,assay="RNA" , vars.to.regress="percent.mito" , return.only.var.genes=FALSE)
-                </code></pre>
-                </div>
-                <img src="images/SS200000135TL_D1.adjusted.cellbin.SCT.png" alt="Description of image"
-                    style="width:600px; height:auto;">
-
-                <h3>LogNormalize</h3>
-                <p>
-                    LogNormalize is a widely used normalization technique.This method typically involves scaling each
-                    cell's total gene expression to a fixed value (such as 10,000), followed by a log-transformation to
-                    reduce the impact of outliers and high-expression genes.
-                </p>
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
-                    data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
-                    Show/Hide Code
-                </button>
-                <!-- Collapsible code block -->
-                <div class="collapse" id="LogNormalizeCode">
-                    <pre><code class="language-r">
-st_data <- NormalizeData(st_data.filter,assay='RNA' ,normalization.method="LogNormalize" )
-                </code></pre>
-                </div>
-                <img src="images/SS200000135TL_D1.adjusted.cellbin.logNormalizaPlot.png" alt="Description of image"
-                    style="width:600px; height:auto;">
+                
 
                 <!-- Dimensions reduction Section -->
                 <h2 id="Seurat-dimensions-reduction" class="mt-5">Dimensions reduction</h2>
