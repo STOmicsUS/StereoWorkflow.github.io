@@ -124,75 +124,11 @@
                 <div include-html="HTML/Processing.html"></div>
                 <div include-html="HTML/Normalization.html"></div>
                 <div include-html="HTML/Seurat-dimensions-reduction.html"></div>
+                <div include-html="HTML/Seurat-clustering.html"></div>
                 
  
 
-                <!-- Clustering Section -->
-                <h2 id="Seurat-clustering" class="mt-5">Clustering</h2>
-                <p>
-                    Clustering is a technique used to identify groups of cells with similar gene expression profiles,
-                    providing insights into the cellular composition and spatial organization of tissues.
-                </p>
-                <p>
-                    Common algorithm for clustering in seurat:
-                </p>
-                <p><b>Original Louvain Algorithm (algorithm = 1)</b></p>
-                <p>Basic version of the Louvain clustering algorithm. It is fast and efficient for small to medium-sized
-                    datasets.
-                    But May not capture fine-grained clusters as well as advanced methods.</p>
-                <p><b>Tips:</b> For quick, general-purpose clustering, especially with smaller datasets.</p>
-                <img src="images/seurat/louvain.png" alt="Description of image" style="width:600px; height:auto;">
 
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratLouvainCode" aria-expanded="false" aria-controls="SeuratLouvainCode">
-                    Show/Hide Code
-                </button>
-                <!-- Collapsible code block -->
-                <div class="collapse" id="SeuratLouvainCode">
-                    <pre><code class="language-r">    
-st_data.norm <- FindClusters(st_data.norm,algorithm=1,cluster.name="louvain",verbose = TRUE)
-                    </code></pre>
-                </div>
-
-                <p><b>Louvain with Multilevel Refinement (algorithm = 2)</b></p>
-                <p>An enhanced version of Louvain with additional refinement steps to improve modularity.
-                    It has better clustering quality than the original Louvain. It is slightly slower than the basic
-                    Louvain algorithm.</p>
-                <p><b>Tips:</b> If you have a moderately sized dataset and need improved clustering accuracy.</p>
-                <img src="images/seurat/louvain2.png" alt="Description of image" style="width:600px; height:auto;">
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratLouvain2Code" aria-expanded="false" aria-controls="SeuratLouvain2Code">
-                Show/Hide Code
-                </button>
-                <!-- Collapsible code block -->
-                <div class="collapse" id="SeuratLouvain2Code">
-                    <pre><code class="language-r">    
-st_data.norm <- FindClusters(st_data.norm,algorithm=2,cluster.name="louvain2",verbose = TRUE)
-                    </code></pre>
-                </div>
-
-                <p><b>Leiden Algorithm (algorithm = 4)</b></p>
-                <p>An advanced clustering method that improves upon Louvain by addressing its limitations,
-                    such as the resolution limit and random initialization dependency.
-                    It produces more consistent and meaningful clusters.Better at detecting small, fine-grained
-                    clusters.</p>
-                <p><b>Tips:</b> Recommended for most single-cell or spatial transcriptomics datasets due to its improved
-                    clustering accuracy and stability.
-                    <b>If you have a large dataset, eg.cell number > 40k, R may run into issues due to memory and long
-                        vectors. To solve this, in seurat,
-                        use the method = "igraph" instead of the default method="matrix"</b>
-                </p>
-                <img src="images/seurat/leiden.png" alt="Description of image" style="width:600px; height:auto;">
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratLeidenCode" aria-expanded="false" aria-controls="SeuratLeidenCode">
-                Show/Hide Code
-                </button>
-                <!-- Collapsible code block -->
-                <div class="collapse" id="SeuratLeidenCode">
-                    <pre><code class="language-r">    
- st_data.norm <- FindClusters(st_data.norm,algorithm=4,method = "igraph",cluster.name="leiden",resolution=1, verbose = TRUE)
-                    </code></pre>
-                </div>
 
         <!-- Find Marker Genes Section -->
         <h2 id="Seurat-find-marker-genes" class="mt-5">Find Marker Genes</h2>
