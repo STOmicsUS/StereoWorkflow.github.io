@@ -119,25 +119,10 @@
                     <img src="images/SS200000135TL_D1_stereoMap.png" alt="SS200000135TL_D1"style="width:800px; height:auto;">
                 </div>
 
-                <div include-html="preparation.html"></div>
+                <div include-html="HTML/preparation.html"></div>
+                <div include-html="HTML/Seurat-loadData.html"></div>
 
-                <!-- loadData Section -->
-                <h2 id="Seurat-loadData" class="mt-5">Load data</h2>
-                <p>Load data in R from rds file</p>
-                <!-- Code block toggle button -->
-                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse"
-                    data-target="#loadRcode" aria-expanded="false" aria-controls="loadRcode">
-                    Show/Hide Code
-                </button>
 
-                <!-- Collapsible code block -->
-                <div class="collapse" id="loadRcode">
-                    <pre><code class="language-r">
-library(Seurat)
-data_path="./SS200000135TL_D1.adjusted.cellbin.rds"
-st_data=readRDS(data_path)
-                </code></pre>
-                </div>
 
                 <!-- Preprocessing Section -->
                 <h2 id="Seurat-preprocessing" class="mt-5">Processing</h2>
