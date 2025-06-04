@@ -1,0 +1,24 @@
+<!-- loadData Section -->
+<h2 id="Seurat-loadData" class="mt-5">Load data</h2>
+<p>Load data in R from rds file</p>
+<!-- Code block toggle button -->
+<button
+    class="btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#loadRcode"
+    aria-expanded="false"
+    aria-controls="loadRcode"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="loadRcode">
+    <p><strong>R Code:</strong></p>
+    <pre><code class="language-r">
+library(Seurat)
+data_path="./SS200000135TL_D1.adjusted.cellbin.rds"
+st_data=readRDS(data_path)
+</code></pre>
+</div>

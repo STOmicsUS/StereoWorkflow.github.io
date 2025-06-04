@@ -1,0 +1,72 @@
+<!-- Preprocessing Section -->
+<h2 id="Seurat-preprocessing" class="mt-5">Processing</h2>
+<h3>Filtering low quality spots</h3>
+<p>
+    In spatial transcriptomics data, filtering low-quality spots is essential to ensure reliable
+    downstream analyses, and using robust metrics like the Median Absolute Deviation (MAD) helps
+    identify outliers effectively.
+    The MAD method provides a robust statistic of variability, minimizing the influence of extreme
+    values that may arise from technical noise or damaged tissue regions.
+    When applying MAD-based filtering, spots with extreme counts or features that deviate significantly
+    from the median by a set threshold, such as 3-5 MADs, are flagged and considered for removal.
+    This approach helps eliminate spots with anomalously low gene counts or excessive count depth that
+    may result from issues like broken membranes or sequencing errors.
+</p>
+<p>
+    Furthermore, filtering by the fraction of mitochondrial reads is crucial because spots with a high
+    proportion of mitochondrial counts often indicate compromised cell integrity. These compromised
+    spots may have lost most cytoplasmic RNA, leaving only mitochondrial transcripts, which can skew the
+    data.
+    However, it is important to apply this filter carefully, as certain cell types or tissue regions
+    might naturally have higher mitochondrial content due to biological functions related to
+    respiration.
+</p>
+<p>
+    By considering MAD-based thresholds for count depth and filtering based on mitochondrial read
+    fractions, researchers can strike a balance between removing poor-quality data and retaining
+    meaningful biological variation.
+    This approach ensures that only genuinely low-quality spots are filtered out, preserving spatial and
+    functional tissue heterogeneity.
+    Ultimately, these filtering steps improve the accuracy and interpretability of spatial
+    transcriptomics analysis by focusing on reliable, biologically relevant data.
+</p>
+
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#preparationCode" aria-expanded="false" aria-controls="preparationCode">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="preparationCode">
+    <pre><code class="language-r">
+st_data=readRDS(data_path)
+preProcessing = function(rds_data){
+    metadata=rds_data@meta.data
+    median_nCount <- median(metadata$nCount_Spatial, na.rm=TRUE)
+    abs_dev_nCount <- abs(metadata$nCount_Spatial - median_nCount)
+    mad_nCount <- median(abs_dev_nCount, na.rm = TRUE)
+
+    median_nFeature <- median(metadata$nFeature_Spatial, na.rm = TRUE)
+    abs_dev_nFeature <- abs(metadata$nFeature_Spatial - median_nFeature)
+    mad_nFeature <- median(abs_dev_nFeature, na.rm = TRUE)
+
+    lower_nCount <- median_nCount - 3 * mad_nCount
+    upper_nCount <- median_nCount + 3 * mad_nCount
+
+    lower_nFeature <- median_nFeature - 3 * mad_nFeature
+    upper_nFeature <- median_nFeature + 3 * mad_nFeature
+
+    rds_data.filter <- subset(rds_data, subset = nCount_Spatial  > lower_nCount &
+                                    nCount_Spatial < upper_nCount &
+                                    nFeature_Spatial  > lower_nFeature &
+                                    nFeature_Spatial < upper_nFeature &
+                                    percent.mito < 10)
+
+    return (rds_data.filter)
+}
+st_data.filter=preProcessing(st_data)
+    </code></pre>
+</div>
+<img src="images/SS200000135TL_D1.adjusted.cellbin.filter_plot.png" alt="Visualization of Seurat filtering results showing filtered spatial transcriptomics data"
+    style="width:600px; height:auto;">
