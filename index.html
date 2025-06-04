@@ -126,71 +126,8 @@
                 <div include-html="HTML/Seurat-dimensions-reduction.html"></div>
                 <div include-html="HTML/Seurat-clustering.html"></div>
                 <div include-html="HTML/Seurat-find-marker-genes.html"></div>
-                
- 
-
-        <!-- Integration of scRNA-seq data section  -->
-        <h2 id="Seurat-integration-of-scRNA-seq-data" class="mt-5">Integration of scRNA-seq data</h2>
-        <p>
-        By leveraging Seurat's integration workflow, scRNA-seq datasets can be aligned with spatial data, allowing the identification of spatially resolved cell types or states. 
-        This process typically involves identifying shared features, such as gene expression patterns, to anchor scRNA-seq data to the spatial domain. 
-        The combined analysis provides a comprehensive view of gene expression in the spatial tissue architecture, facilitating insights into tissue organization and cellular interactions.
-        </p>
-
-
-        <!-- Code block toggle button -->
-        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratIntegrationRCode" aria-expanded="false" aria-controls="SeuratIntegrationRCode">
-        Show/Hide Code
-        </button>
-
-        <!-- Collapsible code block -->
-        <div class="collapse" id="SeuratIntegrationRCode">
-            <pre><code class="language-r">
-SingleCellData=readRDS("Mouse_brain_ref.anndata075.SCT.rds")
-markers=read.csv(paste0(data_path,"mouse.brainMarker.csv"),header = FALSE)
-markers=unique(markers$V2)
-anchors = FindTransferAnchors(reference=SingleCellData, query = st_data.norm2,normalization.method = "SCT", features = markers)
-predictions.assay <- TransferData(anchorset = anchors, refdata = SingleCellData$ClusterName, prediction.assay=TRUE, weight.reduction=st_data.norm2[["pca"]], dims=1:30)
-non.mapping <- c()
-for(i in 1:dim(predictions.assay)[1]){ if(sum(predictions.assay@data[i,])==0) non.mapping <- c(non.mapping, rownames(predictions.assay)[i])}
-predictions.assay@misc$non.mapping <- non.mapping
-predictions.assay@misc$mapping <- setdiff(levels(as.factor(SingleCellData$ClusterName )), non.mapping)
-st_data.norm2[["predictions"]] <- predictions.assay
-
-levels(as.factor(SingleCellData$ClusterName))
-
-                    </code></pre>
-</div>
-<img src="images/seurat/seurat_integration.png" alt="Description of image" style="width:600px; height:auto;">
-
-
-        <!-- Cell Type Annotation  -->
-        <h2 id="Seurat-cell-type-annotation" class="mt-5">Cell Type Annotation</h2>
-        <p>
-        After clustered the spatial transcritpmics data and found the markers, we can use singleR to
-        annotation cell types.
-        This involves leveraging single-cell reference datasets to identify cell types in spatially resolved data.
-        singR uses correlation-based methods and/or supervised machine learning approaches to map spatial
-        spots to cell types in the reference dataset.
-        This process enables researchers to infer spatially resolved cellular compositions, revealing tissue
-        architecture and functional organization at single-cell resolution.
-        </p>
-
-
-        <!-- Code block toggle button -->
-        <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#SeuratSingleRCode" aria-expanded="false" aria-controls="SeuratSingleRCode">
-        Show/Hide Code
-        </button>
-
-        <!-- Collapsible code block -->
-        <div class="collapse" id="SeuratSingleRCode">
-            <pre><code class="language-r">
-annotations <- SingleR(test=st_sce, ref=scRNA_sce, labels=scRNA_sce$ClusterName)
-st_data.norm2$singleR.labels <- annotations$labels[match(rownames(st_data.norm2@meta.data), rownames(annotations))]
-            </code></pre>
-        </div>
-        <img src="images/seurat/SingleR.annotation.png" alt="Description of image" style="width:600px; height:auto;">
-
+                <div include-html="HTML/Seurat-integration-of-scRNA-seq-data.html"></div>
+                <div include-html="HTML/Seurat-cell-type-annotation.html"></div>
 
 
     <!-- Giotto Section -->
