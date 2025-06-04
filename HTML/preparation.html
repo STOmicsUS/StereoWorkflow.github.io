@@ -1,0 +1,68 @@
+                <!-- Preparation Section -->
+                <h2 id="preparation" class="mt-5">Preparation</h2>
+                <h3>Environment Setup</h3>
+                <p>Ensure that the following dependencies are installed:</p>
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#envCode"
+                    aria-expanded="false" aria-controls="envCode">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="envCode">
+                    <pre><code class="language-bash">
+# Install necessary packages
+conda create -n stereoSeq_env python=3.8
+conda activate stereoSeq_env
+pip install numpy pandas scanpy
+                </code></pre>
+                </div>
+                <h2 id="FormatConversion" class="mt-5">Format Conversion</h2>
+                <p>Convert StereoSeq GEF or GEM file to h5ad and rds file. Adding image to the AnnData and RDS object. 
+                    The detailed instruction can be found in the 
+                    <a href="https://stereopy.readthedocs.io/en/v1.6.0/Tutorials/Format_Conversion.html#">Stereopy</a> as well.</p>
+
+                <h3>GEF/GEM to h5ad</h3>
+                Input files: SS200000135TL_D1.adjusted.cellbin.gef and SS200000135TL_D1_ssDNA_regist.tif
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GEFtoh5ad"
+                    aria-expanded="false" aria-controls="GEFtoh5ad">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="GEFtoh5ad">
+                    <pre><code class="language-bash">
+import stereo as st
+gef="SS200000135TL_D1.adjusted.cellbin.gef"
+data = st.io.read_gef(file_path=gef, bin_type='cell_bins')
+data.tl.cal_qc()
+data.tl.raw_checkpoint()
+#If you want to add image to the AnnData object, the image and im_library_id must be provided.
+adata = st.io.stereo_to_anndata(data,flavor='scanpy',image="SS200000135TL_D1_ssDNA_regist.tif",im_library_id="SS200000135TL",output='SS200000135TL_D1.h5ad')
+
+</code></pre>
+                </div>
+                <h3>GEF/GEM to RDS</h3>
+                Input files: SS200000135TL_D1.adjusted.cellbin.gef , SS200000135TL_D1_ssDNA_regist.tif ; script <a href="https://github.com/STOmics/Stereopy/blob/main/docs/source/_static/h5ad2rds.R">h5ad2rds.R</a>
+                <!-- Code block toggle button -->
+                <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GEFtoRDS"
+                    aria-expanded="false" aria-controls="GEFtoRDS">
+                    Show/Hide Code
+                </button>
+                <!-- Collapsible code block -->
+                <div class="collapse" id="GEFtoRDS">
+                    <pre><code class="language-bash">
+import stereo as st
+gef="SS200000135TL_D1.adjusted.cellbin.gef"
+data = st.io.read_gef(file_path=gef, bin_type='cell_bins')
+data.tl.cal_qc()
+data.tl.raw_checkpoint()
+#If you want to add image to the AnnData object, the image and im_library_id must be provided. And be sure to set flavor='seurat' in the function stereo_to_anndata.
+adata = st.io.stereo_to_anndata(data,flavor='seurat',image="SS200000135TL_D1_ssDNA_regist.tif",im_library_id="SS200000135TL",output='SS200000135TL_D1.h5ad')
+
+</code></pre>
+
+After running the above code, you will get a h5ad file. And run the script "Rscript h5ad2rds.R --infile <h5ad file> --outfile <rds file>"
+For detailed instruction, please refer to the <a href="https://stereopy.readthedocs.io/en/v1.6.0/Tutorials/Format_Conversion.html#">Stereopy</a>.
+
+
+                </div>
