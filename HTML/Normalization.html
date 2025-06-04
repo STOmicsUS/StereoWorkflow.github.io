@@ -8,28 +8,30 @@
 
 <h3>scTransform</h3>
 <p>
-    scTransform Built upon a generalized linear model (GLM) framework, scTransform models gene
+    scTransform is built upon a generalized linear model (GLM) framework. It models gene
     expression counts while considering factors such as sequencing depth and technical biases.
 </p>
 
 <!-- Code block toggle button -->
-<button class="btn btn-toggle-code float-right" type="button" data-toggle="collapse"
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
     data-target="#scTransformCode" aria-expanded="false" aria-controls="scTransformCode">
-   Show/Hide Code
+    Show/Hide Code
 </button>
 
 <!-- Collapsible code block -->
 <div class="collapse" id="scTransformCode">
-<pre><code class="language-r">
+    <pre><code class="language-r">
 st_data.norm <- SCTransform(
-    st_data.filter, 
-    assay="RNA",  # Specify the assay to normalize (e.g., RNA data)
-    vars.to.regress="percent.mito",  # Regress out mitochondrial gene percentage to reduce technical noise
-    return.only.var.genes=FALSE  # Return all genes, not just variable ones
+    st_data.filter,
+    assay = "RNA",                # Specify the assay to normalize (e.g., RNA data)
+    vars.to.regress = "percent.mito",  # Regress out mitochondrial gene percentage to reduce technical noise
+    return.only.var.genes = FALSE      # Return all genes, not just variable ones
 )
-</code></pre>
+    </code></pre>
 </div>
-<img src="images/SS200000135TL_D1.adjusted.cellbin.SCT.png" alt="Visualization of cell bin adjustments after SCT normalization"
+
+<img src="images/SS200000135TL_D1.adjusted.cellbin.SCT.png"
+    alt="Visualization of cell bin adjustments after SCT normalization"
     style="width:600px; height:auto;">
 
 <h3>LogNormalize</h3>
@@ -40,15 +42,22 @@ st_data.norm <- SCTransform(
 </p>
 
 <!-- Code block toggle button -->
-<button class="btn btn-toggle-code float-right" type="button" data-toggle="collapse"
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
     data-target="#LogNormalizeCode" aria-expanded="false" aria-controls="LogNormalizeCode">
-Show/Hide Code
+    Show/Hide Code
 </button>
 
 <!-- Collapsible code block -->
 <div class="collapse" id="LogNormalizeCode">
-<pre><code class="language-r">
-st_data <- NormalizeData(st_data.filter,assay='RNA' ,normalization.method="LogNormalize" )
-</code></pre>
-<img src="images/SS200000135TL_D1.adjusted.cellbin.logNormalizaPlot.png" alt="Plot showing the results of LogNormalize applied to spatial transcriptomics data"
+    <pre><code class="language-r">
+st_data <- NormalizeData(
+    st_data.filter,
+    assay = 'RNA',
+    normalization.method = "LogNormalize"
+)
+    </code></pre>
+</div>
+
+<img src="images/SS200000135TL_D1.adjusted.cellbin.logNormalizaPlot.png"
+    alt="Plot showing the results of LogNormalize applied to spatial transcriptomics data"
     style="width:600px; height:auto;">

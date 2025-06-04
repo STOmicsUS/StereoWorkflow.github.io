@@ -125,50 +125,9 @@
                 <div include-html="HTML/Normalization.html"></div>
                 <div include-html="HTML/Seurat-dimensions-reduction.html"></div>
                 <div include-html="HTML/Seurat-clustering.html"></div>
+                <div include-html="HTML/Seurat-find-marker-genes.html"></div>
                 
  
-
-
-
-        <!-- Find Marker Genes Section -->
-        <h2 id="Seurat-find-marker-genes" class="mt-5">Find Marker Genes</h2>
-        <p>
-        After clustering cells, finding marker genes is a crucial step for identifying unique gene
-        expression profiles that define each cluster.
-        Marker genes are typically those that are highly expressed within a specific cluster compared to
-        others, providing insights into cell types.
-        To find marker genes, statistical methods like differential expression analysis are applied to
-        compare gene expression across clusters, identifying genes with significantly higher expression in
-        each group.These marker genes can then be used to annotate clusters, link them to known cell types, and explore
-        spatial patterns of gene activity within the tissue architecture.
-        </p>
-        <p>
-        <b>Tips:</b> This step can speed up significantly by using presto package. If you have not install it, you should see the prompt in R:
-        <i>For a (much!) faster implementation of the Wilcoxon Rank Sum Test,
-        (default method for FindMarkers) please install the presto package
-        --------------------------------------------
-        install.packages('devtools')
-        devtools::install_github('immunogenomics/presto')
-        --------------------------------------------
-        After installation of presto, Seurat will automatically use the more
-        efficient implementation (no further action necessary).
-        This message will be shown once per session</i>
-
-        Follow the prompt in R and install the presto package, and seurat will use it automatically.
-
-        </p>
-            <!-- Code block toggle button -->
-            <button class="btn btn btn-info float-right" type="button" data-toggle="collapse" data-target="#MarkerGeneCode" aria-expanded="false" aria-controls="MarkerGeneCode">
-            Show/Hide Code
-            </button>
-            <!-- Collapsible code block -->
-            <div class="collapse" id="MarkerGeneCode">
-                <pre><code class="language-r">
-de_markers <- FindAllMarkers(st_data.norm,group.by="leiden",only.pos=TRUE,logfc.threshold=0.25,min.pct = 0.1)
-            </code></pre>
-            </div>
-            <img src="images/seurat/heatmap.png" alt="Description of image" style="width:600px; height:auto;">
-
 
         <!-- Integration of scRNA-seq data section  -->
         <h2 id="Seurat-integration-of-scRNA-seq-data" class="mt-5">Integration of scRNA-seq data</h2>
