@@ -138,10 +138,6 @@
                 <div include-html="HTML/Cell-interactions-by-StereoSiTE.html"></div>
                 <div include-html="HTML/Batch-Effect-Removal.html"></div>
 
-
-
-
-
             </div>
         </div>
     </div>
@@ -177,6 +173,7 @@ function includeHTML() {
           elmnt.innerHTML = data;
           elmnt.removeAttribute("include-html");
           includeHTML(); // Recursive for nested includes
+          if (window.hljs) { hljs.highlightAll(); } // <-- Add this line
         });
       return;
     }
