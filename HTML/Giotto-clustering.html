@@ -1,0 +1,85 @@
+<!-- Giotto-clustering Section -->     
+<h2 id="Giotto-clustering" class="mt-5">Clustering</h2>
+<p>
+    First we create a shared nearest neighbor (sNN) network using the normalized expression values,
+    focusing on the first 30 dimensions with 50 neighbors per cell.
+    Apply Leiden and Louvain clustering on the sNN network, assigning cluster labels to Leiden_clus and Louvain_clus, respectively.
+</p>
+<p>
+    <b>Tips</b>: Choose the parameter k depending on the dataset's complexity and size:<br>
+    For small datasets (e.g., less than 10,000 cells): Use smaller k (e.g., 10–30) to focus on local neighborhoods.<br>
+    For large datasets: Use larger k (e.g., 30–100) to better capture global patterns.<br>
+    Test different k values and visualize the results to ensure meaningful clustering.
+</p>
+
+<!-- Code block toggle on -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Giottoclustering"
+    aria-expanded="false"
+    aria-controls="Giottoclustering"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Giottoclustering">
+    <pre><code class="language-r">
+giotto_object = createNearestNetwork(
+    gobject = giotto_object,
+    expression_values = "normalized",
+    type = "sNN",
+    dimensions_to_use = 1:30,
+    k = 50
+)
+giotto_object = doLeidenCluster(
+    giotto_object,
+    name = "leiden_clus",
+    nn_network_to_use = "sNN"
+)
+giotto_object = doLouvainCluster(
+    giotto_object,
+    name = "Louvain_clus",
+    version = c("community", "multinet"),
+    nn_network_to_use = "sNN"
+)
+    </code></pre>
+</div>
+
+<img src="images/Giotto/Clusters.png" alt="Clustering" style="width:600px; height:auto;">
+
+<p>
+    We can evaluate the gene expression correlation between clusters.
+</p>
+
+<!-- Code block toggle on -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#GiottoHeatmap"
+    aria-expanded="false"
+    aria-controls="GiottoHeatmap"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="GiottoHeatmap">
+    <pre><code class="language-r">
+hvg_genes <- giotto_object@gene_metadata[
+    giotto_object@gene_metadata$hvg == "yes",
+]$gene_ID
+
+showClusterHeatmap(
+    giotto_object,
+    cluster_column = "leiden_clus",
+    expression_values = "normalized",
+    genes = hvg_genes
+)
+    </code></pre>
+</div>
+
+<img src="images/Giotto/Leiden_heatmap.png" alt="Clustering" style="width:600px; height:auto;">

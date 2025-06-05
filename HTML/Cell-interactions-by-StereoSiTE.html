@@ -1,0 +1,148 @@
+<!-- Cell-interactions-by-StereoSiTE -->
+<h2 id="Cell-interactions-by-StereoSiTE" class="mt-5">Cell interactions by StereoSiTE</h2>
+
+<h3>Introduction</h3>
+<p>
+    StereoSiTE is a modular analytical framework designed to decode spatial cell–cell interactions within the immune tumor microenvironment (iTME) using spatial transcriptomics data.
+    It first identifies Cellular Neighborhoods (CNs) by clustering spatial bins based on their cell-type compositions, independent of physical location.
+    Within each CN, it quantifies Spatial Cell Interaction Intensity (SCII) by integrating ligand–receptor coexpression with spatial proximity between cells.
+    For detailed information, please see
+    <a href="https://github.com/STOmics/StereoSiTE" target="_blank" rel="noopener noreferrer">StereoSiTE Github repository</a>
+    and
+    <a href="https://doi.org/10.1093/gigascience/giae078E" target="_blank" rel="noopener noreferrer">StereoSiTE publication</a>
+</p>
+
+<h3>Cell deconvolution</h3>
+<p>
+    StereoSiTE has integrated cell2location, you can run cell deconvolution with StereoSiTE,
+    alternatively, you can implement cell2location separately.
+</p>
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#Celldeconvolution" aria-expanded="false" aria-controls="Celldeconvolution">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Celldeconvolution">
+    <pre><code class="language-python">
+from stereosite.read.gem import Gem_Reader
+gem_file = "./demo_data/SS200000681TL_A1.part.gem.gz"
+gem_reader = Gem_Reader(gem_file)
+mask_file = "./SS200000681TL_A1_mask.part.tif"
+adata = gem_reader.gem_with_cellmask_2anndata(mask_file)
+adata.write("./SS200000681TL_A1.part.h5ad")
+
+from stereosite.cn.deconvolution import Cell2location
+# Get the cellular composition of each square bin by deconvolution
+ref_file = "./CT26_scCell_reference.csv"
+adata_file = "./SS200000681TL_A1.part.h5ad"
+out_dir = "demo_results"
+cell2loc = Cell2location(ref_file, adata_file, out_dir = out_dir, bin_size = 1, gpu = 0)
+cell2loc.run_deconvolution()
+    </code></pre>
+</div>
+
+<img src="images/StereoSiTE/deconvolution.png" alt="deconvolution" style="width:600px; height:auto;">
+
+<h3>Cellular Neighborhood</h3>
+<p>
+    Cellular Neighborhoods (CNs) are identified using Leiden clustering based on deconvolved cell-types.
+    CNs represent distinct microenvironments within the tissue, enabling focused analysis of localized cellular organization and interactions.
+</p>
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#CellularNeighborhoods" aria-expanded="false" aria-controls="CellularNeighborhoods">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="CellularNeighborhoods">
+    <pre><code class="language-python">
+from stereosite.cn.cellneighbor import cn_deconvolve
+import anndata
+adata_anno_file = "./demo_results/cell2location_map/sp.h5ad"
+adata = anndata.read(adata_anno_file)
+# use_rep specify matrix used to calculate cell composition of every bin
+cn_deconvolve(adata, use_rep='q05_cell_abundance_w_sf')
+# CN result visualization
+from stereosite.plot.cellneighbor import umap, heatmap, spatial
+spatial(adata, spot_size=20)
+umap(adata)
+heatmap(adata)
+    </code></pre>
+</div>
+<img src="images/StereoSiTE/CNs.png" alt="spatial_cn" style="width:600px; height:auto;">
+
+<h3>Cell-cell interactions</h3>
+<p>
+    This module uses Ligand-receptor interactions in CellChat database.
+</p>
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#Cell-cellInteractions" aria-expanded="false" aria-controls="Cell-cellInteractions">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Cell-cellInteractions">
+    <pre><code class="language-python">
+from stereosite.scii import intensities_count
+interactiondb_file = "./CellChatDB.mouse.csv"
+scii_dict = intensities_count(adata, interactiondb_file,
+    distance_threshold = 50,
+    anno = 'cell2loc_anno')
+    </code></pre>
+</div>
+<img src="images/StereoSiTE/interaction.png" alt="interaction" style="width:600px; height:auto;">
+<p>
+    The interaction intensity analysis shows intensity of interaction mediated by specific LR pair and between specific cells.
+</p>
+
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#SCII" aria-expanded="false" aria-controls="SCII">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="SCII">
+    <pre><code class="language-python">
+adata_anno_raw = adata.raw.to_adata()
+from stereosite.plot.intensity import intensity_insitu
+cells = ['Non-immune cells', 'M2-like']
+genes = ['Col1a2', 'Sdc4']
+intensity_insitu(adata_anno_raw, cells, genes, radius = 200, distance_coefficient=1, spot_size=5)
+    </code></pre>
+</div>
+<img src="images/StereoSiTE/scii.png" alt="scii" style="width:600px; height:auto;">
+
+<h3>Tumor microenvironment analysis</h3>
+<p>
+    StereoSiTE can be used for deciphering tumor microenvironment by analysis cell-cell interactions.
+</p>
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#TMEmodule" aria-expanded="false" aria-controls="TMEmodule">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="TMEmodule">
+    <pre><code class="language-python">
+from stereosite import scii_tensor
+
+adata = anndata.read("./demo_result/cell2location_map/sp.h5ad")
+interactionDB = "./CellChatDB.mouse.csv"
+sct = scii_tensor.InteractionTensor(adata, interactionDB=interactionDB)
+radius = {'Secreted Signaling': 100, 'ECM-Receptor': 100, 'Cell-Cell Contact': 30}
+scii_tensor.build_SCII(sct, radius=radius, window_size=200, anno_col='cell2loc_anno')
+scii_tensor.process_SCII(sct, zero_remove=True, log_data=True)
+scii_tensor.SCII_Tensor(sct, rank=[15, 15, 15], device='cuda:0')
+import scanpy as sc
+sc.pl.spatial(sct.adata, color='TME_module', img_key=None, spot_size=20)
+from stereosite.plot.scii_tensor import tme_core_heatmap
+tme_core_heatmap(sct.core, tme_number=1, figsize=(4, 4))
+    </code></pre>
+</div>
+<img src="images/StereoSiTE/TME.png" alt="TME" style="width:600px; height:auto;">
