@@ -1,0 +1,45 @@
+<!-- Giotto-normalization-and-HVG Section -->     
+<h2 id="Giotto-normalization-and-HVG" class="mt-5">Normalization and HVG</h2>
+
+<p>Giotto provides two normalization methods.</p>
+
+<ol>
+    <li>
+        <b>Standard:</b>
+        <ul>
+            <li>Normalization for total library size and scaling</li>
+            <li>Log transformation of data</li>
+            <li>Z-scoring of data by genes and/or cells</li>
+        </ul>
+    </li>
+    <li>
+        <b>osmFISH:</b>
+        <ul>
+            <li>Each gene: divide the total gene count and multiply by the total number of genes</li>
+            <li>Each cell: divide the normalized gene counts by the total counts per cell and multiply by the total number of cells</li>
+        </ul>
+    </li>
+</ol>
+
+<p>Here we use standard normalization.</p>
+
+<p>
+    After normalization, we can calculate the highly variable genes. In Giotto, we use the default method, high COV within groups. In this method,
+    genes are binned into groups based on average expression and the COV for each gene is converted into a z-score. 
+    Genes with a z-score higher than the threshold are considered highly variable.
+</p>
+
+<!-- Code block toggle on -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoNorm" aria-expanded="false" aria-controls="GiottoNorm">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="GiottoNorm">
+    <pre><code class="language-r">
+giotto_object.norm = normalizeGiotto(gobject = giotto_object, verbose = T, norm_methods = "standard")
+giotto_obj = calculateHVG(giotto_object.norm)
+    </code></pre>
+</div>
+
+<img src="images/Giotto/HVGplot.png" alt="Description of image" style="width:600px; height:auto;">

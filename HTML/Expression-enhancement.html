@@ -1,0 +1,58 @@
+<!-- Expression-enhancement -->
+<h2 id="Expression-enhancement" class="mt-5">Expression enhancement</h2>
+<h3>BayesSpace</h3>
+
+<!-- Code block toggle button -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse"
+    data-target="#BayesSpace" aria-expanded="false" aria-controls="BayesSpace">
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="BayesSpace">
+    <pre><code class="language-r">
+data = readRDS("SS200000135TL_D1.tissue.gef_bin20.seurat.rds")
+st = as.SingleCellExperiment(data)
+colData(st)$col      = colData(st)$x / 200
+colData(st)$row      = colData(st)$y / 200
+colData(st)$imagecol = colData(st)$x
+colData(st)$imagerow = colData(st)$y
+
+st <- spatialPreprocess(
+    st, platform = "ST",
+    n.PCs = 7, n.HVGs = 2000, log.normalize = FALSE
+)
+st.tune <- qTune(
+    st, qs = seq(2, 20), platform = "ST", d = 7
+)
+
+qPlot(st.tune)
+
+st.tune <- spatialCluster(
+    st.tune, q = 17, platform = "ST", d = 7,
+    init.method = "mclust", model = "t",
+    gamma = 2,
+    nrep = 1000, burn.in = 100,
+    save.chain = TRUE
+)
+
+st.enhanced <- spatialEnhance(
+    st.tune, q = 17, platform = "ST", d = 7,
+    model = "t", gamma = 2,
+    jitter_prior = 0.3, jitter_scale = 3.5,
+    nrep = 1000, burn.in = 100,
+    save.chain = TRUE
+)
+
+markers = c("Ntng1")
+st.enhanced <- enhanceFeatures(
+    st.enhanced, st,
+    feature_names = markers,
+    nrounds = 0
+)
+featurePlot(st, "Ntng1")
+featurePlot(st.enhanced, "Ntng1")
+    </code></pre>
+</div>
+
+<img src="images/Image_20241029120419.png" alt="Description of image" style="width:600px; height:auto;">

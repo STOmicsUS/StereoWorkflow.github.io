@@ -1,0 +1,82 @@
+<!-- MultiSample -->
+<!-- Batch Effect -->
+
+<div style="height:100px"></div>
+<h2 id="Batch-Effect-Removal" class="mt-5">Batch Effect Removal</h2>
+<p>
+    Batch effect removal in spatial transcriptomics corrects technical variations between samples or slides that can obscure true biological signals.
+    Methods like Harmony, Seurat’s integration, or spatial-aware approaches align datasets by adjusting for batch-specific biases while preserving spatial and transcriptional structure.
+    This enables more accurate downstream analyses such as clustering and differential expression.
+</p>
+
+<h3>Harmoy in R</h3>
+<!-- Code block toggle button -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Harmoy-in-R"
+    aria-expanded="false"
+    aria-controls="Harmoy-in-R"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Harmoy-in-R">
+    <pre><code class="language-r">
+st_data1 = readRDS(data1)
+st_data2 = readRDS(data2)
+st_merge = merge(st_data1, st_data2, add.cell.ids = c("data1", "data2"))
+st_merge$sample = rownames(st_merge@meta.data)
+st_merge@meta.data = separate(
+    st_merge@meta.data,
+    col = 'sample',
+    into = c('condition', 'Barcode'),
+    sep = '_'
+)
+# Use the previous preprocessing, normalization and clustering steps
+st_merge.filter = preProcessing(st_merge, 5)
+st_merge.norm = Seurat::SCTransform(
+    st_merge.filter,
+    assay = "Spatial",
+    vars.to.regress = "percent.mito",
+    return.only.var.genes = FALSE,
+    method = "glmGamPoi"
+)
+st_merge.norm = find_clusters(st_merge.norm, 20, 20)
+# Plot the UMAP before integration
+umap_plot = DimPlot(
+    st_merge.norm,
+    reduction = "umap",
+    label = TRUE,
+    group.by = "condition"
+) + ggtitle("Before integration")
+
+# Harmony integration
+st_merge.harmony = st_merge.norm %>%
+    RunHarmony(group.by.vars = 'condition', plot_convergence = TRUE)
+
+st_merge.harmony = st_merge.harmony %>%
+    RunUMAP(reduction = 'harmony', dims = 1:30) %>%
+    FindNeighbors(reduction = "harmony", dims = 1:30) %>%
+    FindClusters(
+        resolution = 0.5,
+        algorithm = 4,
+        method = "igraph",
+        cluster.name = "harmony.leiden"
+    )
+# Plot the UMAP after integration
+after_dimplot = DimPlot(
+    st_merge.harmony,
+    reduction = 'umap',
+    group.by = 'condition'
+) + ggtitle("After integration")
+    </code></pre>
+</div>
+
+<img
+    src="images/HarmonyIntegration_R.png.jpg"
+    alt="Description of image"
+    style="width:600px; height:auto;"
+>

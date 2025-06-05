@@ -1,0 +1,27 @@
+<!-- Giotto Integration section -->     
+<h2 id="Giotto-integration-of-scRNA-seq-data" class="mt-5">Integration of scRNA-seq data</h2>
+
+<!-- Code block toggle on -->
+<button class="btn btn-info float-right" type="button" data-toggle="collapse" data-target="#GiottoFIntegrationCode" aria-expanded="false" aria-controls="GiottoFIntegrationCode">
+    Show/Hide Code
+</button>
+<!-- Collapsible code block -->
+<div class="collapse" id="GiottoFIntegrationCode">
+    <pre><code class="language-r">
+SingleCellData = readRDS("Reference/Mouse_brain_ref.anndata075.rds")
+
+sc_sign_matrix = makeSignMatrixRank(
+    as.matrix(SingleCellData@assays$RNA@data),
+    SingleCellData$ClusterName,
+    ties_method = "random",
+    gobject = giotto_obj
+)
+
+giotto_obj <- runSpatialEnrich(
+    giotto_obj,
+    enrich_method = c("rank"),
+    sign_matrix = sc_sign_matrix,
+    expression_values = c("normalized")
+)
+    </code></pre>
+</div>

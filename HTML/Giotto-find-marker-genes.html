@@ -1,0 +1,34 @@
+<!-- Giotto find marker gene Section -->     
+<h2 id="Giotto-find-marker-genes" class="mt-5">Find marker genes</h2>
+<p>
+    Giotto provides three different methods to detect cluster specific marker genes: scran, gini and mast.
+    <br>
+    <strong>scran</strong> is generally recommended in spatial transcriptomics data.
+</p>
+<!-- Code block toggle on -->
+<button
+    class="btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#GiottoFindMarkerGene"
+    aria-expanded="false"
+    aria-controls="GiottoFindMarkerGene"
+>
+    Show/Hide Code
+</button>
+<!-- Collapsible code block -->
+<div class="collapse" id="GiottoFindMarkerGene">
+    <pre>
+<code class="language-r">
+scran_markers = findScranMarkers_one_vs_all(
+    giotto_object,
+    expression_values = "normalized",
+    cluster_column = "leiden_clus",
+    pval = 0.01,
+    logFC = 0.5,
+    method = "scran",
+    verbose = TRUE
+)
+</code>
+    </pre>
+</div>
