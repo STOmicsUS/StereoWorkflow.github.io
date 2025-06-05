@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="/css/sidebarStyle.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
 
     <style>
         .btn {
@@ -152,10 +151,6 @@
         integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
         crossorigin="anonymous"></script>
 
-    <!-- Highlight.js initialization -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
-    <script>hljs.highlightAll();</script>
     <script>
 function includeHTML() {
   var z, i, elmnt, file;
@@ -173,7 +168,7 @@ function includeHTML() {
           elmnt.innerHTML = data;
           elmnt.removeAttribute("include-html");
           includeHTML(); // Recursive for nested includes
-          if (window.hljs) { hljs.highlightAll(); } // <-- Add this line
+          if (window.hljs) { hljs.highlightAll(); }
         });
       return;
     }
