@@ -42,9 +42,6 @@
             border-radius: 5px;
         }
 
-        h4 {
-            white-space: nowrap;
-        }
     </style>
 </head>
 
@@ -83,7 +80,6 @@
                         <li class="nav-item"><a href="#Seurat-clustering" class="nav-link">Clustering</a></li>
                         <li class="nav-item"><a href="#Seurat-find-marker-genes" class="nav-link">Find marker genes</a></li>
                         <li class="nav-item"><a href="#Seurat-integration-of-scRNA-seq-data" class="nav-link">Integration of scRNA-seq data</a></li>
-                        <li class="nav-item"><a href="#Seurat-cell-type-annotation" class="nav-link">Cell type annotation</a></li>
                     </ul>
                     <h4>Giotto basic Workflow</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
@@ -94,9 +90,9 @@
                         <li class="nav-item"><a href="#Giotto-find-marker-genes" class="nav-link">Find marker genes</a></li>
                         <li class="nav-item"><a href="#Giotto-integration-of-scRNA-seq-data" class="nav-link">Integration of scRNA-seq data</a></li>
                     </ul>
-                    <h4>Cell type deconvolution and annotation</h4>
+                    <h4 style="font-size: 1rem;">Cell type deconvolution and annotation</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
-                        <li class="nav-item"><a href="#" class="nav-link">Cell interactions by StereoSiTE</a></li>
+                        <li class="nav-item"><a href="#SingleR" class="nav-link">SingleR</a></li>
 
                     <h4>Advanced Analysis</h4>
                     <ul class="nav flex-column" style="list-style-type: none; padding: 0; margin: 0;">
@@ -136,13 +132,15 @@
                 <div include-html="HTML/Seurat-clustering.html"></div>
                 <div include-html="HTML/Seurat-find-marker-genes.html"></div>
                 <div include-html="HTML/Seurat-integration-of-scRNA-seq-data.html"></div>
-                <div include-html="HTML/Seurat-cell-type-annotation.html"></div>
                 <div include-html="HTML/Giotto-create-giotto-object.html"></div>
                 <div include-html="HTML/Giotto-normalization-and-HVG.html"></div>
                 <div include-html="HTML/Giotto-dimension-reduction.html"></div>
                 <div include-html="HTML/Giotto-clustering.html"></div>
                 <div include-html="HTML/Giotto-find-marker-genes.html"></div>
                 <div include-html="HTML/Giotto-integration-of-scRNA-seq-data.html"></div>
+
+                <div style="height:100px"></div>
+                <h2 class="mt-5">Cell type deconvolution and annotation</h2>
                 <p> <b>Cell type deconvolution</b> aims to estimate the proportion of different cell types present within each spatial spot, especially when each spot captures transcripts from multiple cells. 
                     This method leverages reference single-cell RNA-seq datasets to computationally infer cell type mixtures, enabling the spatial mapping of cellular composition across tissue sections. 
                 </p>
@@ -154,6 +152,7 @@
                     If you are using Stereo-Seq squrebin data, and your bin size is larger than a single cell, you should consider cell type deconvolution.
                     If your are using cellbin data or your bin size is smaller than a single cell, you can use cell type annotation.
                 </p>
+                <div include-html="HTML/CellType_SingleR.html"></div>
 
                 <div include-html="HTML/Cell-interactions-by-StereoSiTE.html"></div>
                 <div include-html="HTML/Batch-Effect-Removal.html"></div>
