@@ -41,6 +41,10 @@
             background-color: #ffecec;
             border-radius: 5px;
         }
+
+        h4 {
+            white-space: nowrap;
+        }
     </style>
 </head>
 
@@ -139,20 +143,22 @@
                 <div include-html="HTML/Giotto-clustering.html"></div>
                 <div include-html="HTML/Giotto-find-marker-genes.html"></div>
                 <div include-html="HTML/Giotto-integration-of-scRNA-seq-data.html"></div>
-                <div include-html="HTML/Cell-interactions-by-StereoSiTE.html"></div>
-                <div include-html="HTML/Batch-Effect-Removal.html"></div>
-                <p> Cell type deconvolution aims to estimate the proportion of different cell types present within each spatial spot, especially when each spot captures transcripts from multiple cells. 
+                <p> <b>Cell type deconvolution</b> aims to estimate the proportion of different cell types present within each spatial spot, especially when each spot captures transcripts from multiple cells. 
                     This method leverages reference single-cell RNA-seq datasets to computationally infer cell type mixtures, enabling the spatial mapping of cellular composition across tissue sections. 
                 </p>
                 <p>
-                    Cell type annotation involves assigning a discrete cell type label to each spatial unit, such as a single cell or spot, based on its gene expression profile. 
+                    <b>Cell type annotation</b> involves assigning a discrete cell type label to each spatial unit, such as a single cell or spot, based on its gene expression profile. 
                     This process typically uses reference datasets or computational methods to classify cells into known types, allowing for the identification of spatial patterns and functional states of cells within the tissue.
                 </p>
                 <p>
                     If you are using Stereo-Seq squrebin data, and your bin size is larger than a single cell, you should consider cell type deconvolution.
                     If your are using cellbin data or your bin size is smaller than a single cell, you can use cell type annotation.
                 </p>
-                
+
+                <div include-html="HTML/Cell-interactions-by-StereoSiTE.html"></div>
+                <div include-html="HTML/Batch-Effect-Removal.html"></div>
+
+
 
 
             </div>
