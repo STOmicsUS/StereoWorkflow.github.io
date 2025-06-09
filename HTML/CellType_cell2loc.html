@@ -221,11 +221,6 @@ mod.view_anndata_setup()
     </code></pre>
 </div>
 
-<img
-    src="images/Cell2Loc/Training_QC.png"
-    alt="training loss"
-    style="width:600px; height:auto;"
->
 <div style="text-align:left; font-style:italic; margin-top:4px;">
 <p>First plot: "Reconstruction accuracy" shows observed gene expression values vs. Model's posterior expected value (reconstructed value).
 Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
@@ -234,6 +229,7 @@ Model's estimated expression (log10) for each gene in each cluster.</p>
 
 <br><br>
 5. Spatial model training (spatial data)
+<p>
 Uses the reference signatures from previous steps to  
 infer the abundance of each cell type in every spatial spot/cell.
 In short,
@@ -243,21 +239,23 @@ Second training (stereoSeq spatial data):
 After training, the model can estimate the abundance of each cell type in every spatial spot/cell.
 We can export the posterior estimates (model's learned expected cell type abundance for each spot)
 and add them to the spatial AnnData object.
+</p>
+
 <!-- Code block toggle button -->
 <button
     class="btn btn btn-info float-right"
     type="button"
     data-toggle="collapse"
-    data-target="#Cell2LocCode_ST_Data"
+    data-target="#Cell2LocCode_ST_Train"
     aria-expanded="false"
-    aria-controls="Cell2LocCode_ST_Data"
+    aria-controls="Cell2LocCode_ST_Train"
 >
     Show/Hide Code
 </button>
 
 
 <!-- Collapsible code block -->
-<div class="collapse" id="Cell2LocCode_ST_Data">
+<div class="collapse" id="Cell2LocCode_ST_Train">
     <pre><code class="language-python">
 mod.train(max_epochs=500,batch_size=2500)
 mod.plot_history(20)
@@ -269,6 +267,8 @@ adata = mod.export_posterior(
 
 <br><br>
 5. Plot the predicted results.
+<br><br>
+
 <!-- Code block toggle button -->
 <button
     class="btn btn btn-info float-right"
@@ -301,6 +301,29 @@ with mpl.rc_context({'axes.facecolor':  'black',
                   ncols=4, size=1.3,
                   img_key='hires',
                   vmin=0, vmax='p100')
+
+
+from cell2location.plt import plot_spatial
+
+# select up to 6 clusters
+clust_labels =  ["TEGLU10","VLMC2","DEGLU1","MBDOP2","DGGRC2","MOL2"]
+clust_col = ['' + str(i) for i in clust_labels] # in case column names differ from labels
+
+
+with mpl.rc_context({'figure.figsize': (15, 15)}):
+    fig = plot_spatial(
+        adata=adata,
+        # labels to show on a plot
+        color=clust_col, labels=clust_labels,
+        show_img=True,
+        # 'fast' (white background) or 'dark_background'
+        style='fast',
+        # limit color scale at 99.2% quantile of cell abundance
+        max_color_quantile=0.992,
+        # size of locations (adjust depending on figure size)
+        circle_diameter=1,
+        colorbar_position='right'
+    )
     </code></pre>
 </div>
 
