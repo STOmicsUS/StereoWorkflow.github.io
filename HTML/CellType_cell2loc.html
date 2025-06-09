@@ -3,21 +3,24 @@
 
 <h2 id="Cell2Loc" class="mt-5">Cell2location</h2>
 <p>
-    <b>Cell2location</b> is a powerful tool for spatial transcriptomics analysis that integrates single-cell RNA-seq data as a reference. 
-    It is primarily designed for cell type deconvolution, accurately estimating the abundance of multiple cell types within each spatial spot, especially when spots contain mixtures of cells. 
-    When the spatial resolution approaches single-cell level,you can run it with <i>N_cells_per_location=1</i>, 
-    then you can use cell2location to infer the most likely cell type for each spot. 
-    In this special case, cell2location's estimated cell type abundance per spot can be interpreted as a "soft" cell type annotation. 
+    <b>Cell2location</b> is a powerful tool for spatial transcriptomics analysis that integrates single-cell RNA-seq data as a reference.
+    It is primarily designed for cell type deconvolution, accurately estimating the abundance of multiple cell types within each spatial spot, especially when spots contain mixtures of cells.
+    When the spatial resolution approaches the single-cell level, you can run it with <i>N_cells_per_location=1</i>.
+    In this special case, cell2location's estimated cell type abundance per spot can be interpreted as a "soft" cell type annotation.
     Its versatility makes it widely used in both high-resolution and lower-resolution spatial transcriptomics datasets.
 </p>
 
 <p>
-    1. Cell2Location data preparation.
+    References: <br>
+    <a href="https://cell2location.readthedocs.io/en/latest/" target="_blank">https://cell2location.readthedocs.io/en/latest/</a><br>
+    <a href="https://cell2location.readthedocs.io/en/latest/notebooks/cell2location_tutorial.html#Cell2location:-spatial-mapping" target="_blank">cell2location tutorial</a>
 </p>
+
+<p>1. Cell2location data preparation.</p>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_filtering"
@@ -29,20 +32,19 @@
 
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_filtering">
-    <pre><code class="language-python">
-import scanpy as sc
+    <pre><code class="language-python">import scanpy as sc
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import rcParams
 import cell2location
 
-#Set up output dirctory
+# Set up output directory
 results_folder = './Stereo_cellbin_demo'
 ref_run_name = f'{results_folder}/cellbin_reference_signatures'
 run_name = f'{results_folder}/cellbin_map'
 
-# Load the the cellbin data and the reference single-cell RNA-seq data
+# Load the cellbin data and the reference single-cell RNA-seq data
 adata = sc.read_h5ad("SS200000135TL_D1.adjusted.cellbin.gef_cellBin.seurat.h5ad")
 adata_ref = sc.read_h5ad("Mouse_brain_ref.anndata075.h5ad")
 
@@ -51,44 +53,51 @@ adata.var['MT_gene'] = [gene.startswith('mt-') for gene in adata.var['SYMBOL']]
 adata.obsm['MT'] = adata[:, adata.var['MT_gene'].values].X.toarray()
 adata = adata[:, ~adata.var['MT_gene'].values]
 
-# filter the Reference using cell2location filtering function.
-
+# Filter the reference using cell2location filtering function.
 from cell2location.utils.filtering import filter_genes
-selected = filter_genes(adata_ref, cell_count_cutoff=50, cell_percentage_cutoff2=0.05, nonz_mean_cutoff=1.12)
+selected = filter_genes(
+    adata_ref,
+    cell_count_cutoff=50,
+    cell_percentage_cutoff2=0.05,
+    nonz_mean_cutoff=1.12
+)
 adata_ref = adata_ref[:, selected].copy()
 
-#Prepares your adata_ref for use with cell2location’s RegressionModel.
-#Registers ClusterName (cell type labels) as the categorical variable for modeling.
-cell2location.models.RegressionModel.setup_anndata(adata=adata_ref,labels_key='ClusterName')
+# Prepare adata_ref for use with cell2location’s RegressionModel.
+# Register ClusterName (cell type labels) as the categorical variable for modeling.
+cell2location.models.RegressionModel.setup_anndata(
+    adata=adata_ref,
+    labels_key='ClusterName'
+)
 from cell2location.models import RegressionModel
 mod = RegressionModel(adata_ref)
 mod.view_anndata_setup()
-
-    </code></pre>
+</code></pre>
 </div>
 
 <img
     src="images/Cell2Loc/Ref_filtering.png"
-    alt="filtered reference data"
+    alt="Filtered reference data"
     style="width:600px; height:auto;"
 >
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-The image shows the results of filtering the reference data, 
-the orange box highlighting the area where genes are filtered out (do not meet cutoff criteria).
-After filtering, you have 67,419 cells and 9,435 genes.
+    The image shows the results of filtering the reference data,
+    with the orange box highlighting the area where genes are filtered out (do not meet cutoff criteria).
+    After filtering, you have 67,419 cells and 9,435 genes.
 </div>
 
 <br><br>
 
+2. Cell2location model training.
 
-2. Cell2Location model training.
-
-<p>Trains the RegressionModel for 250 epochs to learn gene expression signatures for each cell type 
-using filtered single-cell data.</p> 
+<p>
+    Train the RegressionModel for 250 epochs to learn gene expression signatures for each cell type
+    using filtered single-cell data.
+</p>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_Ref_train"
@@ -98,37 +107,36 @@ using filtered single-cell data.</p>
     Show/Hide Code
 </button>
 
-
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_Ref_train">
-    <pre><code class="language-python">
-mod.train(max_epochs=250)
+    <pre><code class="language-python">mod.train(max_epochs=250)
 mod.plot_history(20)
-    </code></pre>
+</code></pre>
 </div>
 
 <img
     src="images/Cell2Loc/Ref_training.png"
-    alt="training loss"
+    alt="Training loss"
     style="width:600px; height:auto;"
 >
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-The image shows that the loss steadily decreases as training progresses, 
-indicating that the model is successfully learning and fitting the data.
+    The image shows that the loss steadily decreases as training progresses,
+    indicating that the model is successfully learning and fitting the data.
 </div>
 
 <br><br>
 
+3. Evaluate reference training result.
 
-3. Evaluate Reference training result.
-
-<p>Exports posterior estimates (model's learned expected gene expression for each cell type) 
-    and adds them to the reference AnnData object. Evaluate the training result by plotting the
-    Observed gene expression values vs. estimates gene expression.</p>
+<p>
+    Export posterior estimates (the model's learned expected gene expression for each cell type)
+    and add them to the reference AnnData object. Evaluate the training result by plotting the
+    observed gene expression values vs. estimated gene expression.
+</p>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_Ref_trainEva"
@@ -138,56 +146,61 @@ indicating that the model is successfully learning and fitting the data.
     Show/Hide Code
 </button>
 
-
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_Ref_trainEva">
-    <pre><code class="language-python">
-adata_ref = mod.export_posterior(
+    <pre><code class="language-python">adata_ref = mod.export_posterior(
     adata_ref, use_quantiles=True,
     # choose quantiles
-    add_to_varm =["q05","q50", "q95", "q0001"],
+    add_to_varm=["q05", "q50", "q95", "q0001"],
     sample_kwargs={'batch_size': 2500}
 )
 
 mod.plot_QC(summary_name="q50")
 
-
 if 'means_per_cluster_mu_fg' in adata_ref.varm.keys():
     # If results are stored in varm (the usual place after export_posterior)
-    inf_aver = adata_ref.varm['means_per_cluster_mu_fg'][[f'means_per_cluster_mu_fg_{i}'
-                                    for i in adata_ref.uns['mod']['factor_names']]].copy()
+    inf_aver = adata_ref.varm['means_per_cluster_mu_fg'][[
+        f'means_per_cluster_mu_fg_{i}'
+        for i in adata_ref.uns['mod']['factor_names']
+    ]].copy()
 else:
     # Fallback: look for the values in var (less common)
-    inf_aver = adata_ref.var[[f'means_per_cluster_mu_fg_{i}'
-                                    for i in adata_ref.uns['mod']['factor_names']]].copy()
+    inf_aver = adata_ref.var[[
+        f'means_per_cluster_mu_fg_{i}'
+        for i in adata_ref.uns['mod']['factor_names']
+    ]].copy()
 
 # Rename columns to use cluster (cell type) names, not raw field names
 inf_aver.columns = adata_ref.uns['mod']['factor_names']
-
-    </code></pre>
+</code></pre>
 </div>
 
 <img
     src="images/Cell2Loc/Training_QC.png"
-    alt="training QC"
+    alt="Training QC"
     style="width:600px; height:auto;"
 >
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-<p>First plot: "Reconstruction accuracy" shows observed gene expression values vs. Model's posterior expected value (reconstructed value).
-Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
-Model's estimated expression (log10) for each gene in each cluster.</p>
+    <p>
+        First plot: "Reconstruction accuracy" shows observed gene expression values vs. the model's posterior expected value (reconstructed value).
+        Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
+        the model's estimated expression (log10) for each gene in each cluster.
+    </p>
 </div>
 
 <br><br>
-4. Prepare the spatial data for Cell2Location.
 
-<p>Find shared genes and subset both anndata and reference signatures.
-    prepare the spatial AnnData for cell2location model. 
-Initialize cell2location model.</p>
+4. Prepare the spatial data for Cell2location.
+
+<p>
+    Find shared genes and subset both AnnData and reference signatures.
+    Prepare the spatial AnnData for the cell2location model.
+    Initialize the cell2location model.
+</p>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_ST_Data"
@@ -197,53 +210,56 @@ Initialize cell2location model.</p>
     Show/Hide Code
 </button>
 
-
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_ST_Data">
-    <pre><code class="language-python">
-# find shared genes and subset both anndata and reference signatures
+    <pre><code class="language-python"># Find shared genes and subset both AnnData and reference signatures
 intersect = np.intersect1d(adata.var_names, inf_aver.index)
 adata = adata[:, intersect].copy()
 inf_aver = inf_aver.loc[intersect, :].copy()
 
-# prepare anndata for cell2location model
+# Prepare AnnData for cell2location model
 cell2location.models.Cell2location.setup_anndata(adata=adata)
 
 mod = cell2location.models.Cell2location(
-    adata, cell_state_df=inf_aver,
+    adata,
+    cell_state_df=inf_aver,
     # Set N_cells_per_location=1 for cellbin data.
     N_cells_per_location=1,
-    # hyperparameter controlling normalisation of
+    # Hyperparameter controlling normalization of
     # within-experiment variation in RNA detection:
     detection_alpha=200
 )
 mod.view_anndata_setup()
-    </code></pre>
+</code></pre>
 </div>
 
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-<p>First plot: "Reconstruction accuracy" shows observed gene expression values vs. Model's posterior expected value (reconstructed value).
-Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
-Model's estimated expression (log10) for each gene in each cluster.</p>
+    <p>
+        First plot: "Reconstruction accuracy" shows observed gene expression values vs. the model's posterior expected value (reconstructed value).
+        Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
+        the model's estimated expression (log10) for each gene in each cluster.
+    </p>
 </div>
 
 <br><br>
+
 5. Spatial model training (spatial data)
 <p>
-Uses the reference signatures from previous steps to  
-infer the abundance of each cell type in every spatial spot/cell.
-In short,
-First training (reference single cell): “What does each cell type look like?”
-Second training (stereoSeq spatial data):
- “How much of each cell type is present in each spot, given the observed mixed expression?”
-After training, the model can estimate the abundance of each cell type in every spatial spot/cell.
-We can export the posterior estimates (model's learned expected cell type abundance for each spot)
-and add them to the spatial AnnData object.
+    Use the reference signatures from previous steps to
+    infer the abundance of each cell type in every spatial spot/cell.
+    In short:
+    <ul>
+        <li>First training (reference single cell): “What does each cell type look like?”</li>
+        <li>Second training (Stereo-seq spatial data): “How much of each cell type is present in each spot, given the observed mixed expression?”</li>
+    </ul>
+    After training, the model can estimate the abundance of each cell type in every spatial spot/cell.
+    We can export the posterior estimates (the model's learned expected cell type abundance for each spot)
+    and add them to the spatial AnnData object.
 </p>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_ST_Train"
@@ -253,25 +269,25 @@ and add them to the spatial AnnData object.
     Show/Hide Code
 </button>
 
-
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_ST_Train">
-    <pre><code class="language-python">
-mod.train(max_epochs=500,batch_size=2500)
+    <pre><code class="language-python">mod.train(max_epochs=500, batch_size=2500)
 mod.plot_history(20)
 adata = mod.export_posterior(
-    adata, sample_kwargs={'num_samples': 1000, 'batch_size': mod.adata.n_obs}
+    adata,
+    sample_kwargs={'num_samples': 1000, 'batch_size': mod.adata.n_obs}
 )
-    </code></pre>
+</code></pre>
 </div>
 
 <br><br>
-5. Plot the predicted results.
+
+6. Plot the predicted results.
 <br><br>
 
 <!-- Code block toggle button -->
 <button
-    class="btn btn btn-info float-right"
+    class="btn btn-info float-right"
     type="button"
     data-toggle="collapse"
     data-target="#Cell2LocCode_ST_Plot"
@@ -281,40 +297,40 @@ adata = mod.export_posterior(
     Show/Hide Code
 </button>
 
-
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_ST_Plot">
-    <pre><code class="language-python">
-# add 5% quantile, representing confident cell abundance, 'at least this amount is present',
+    <pre><code class="language-python"># Add 5% quantile, representing confident cell abundance, 'at least this amount is present',
 # to adata.obs with nice names for plotting
 adata.obs[adata.uns['mod']['factor_names']] = adata.obsm['q05_cell_abundance_w_sf']
 
-#Plot 6 cell types for illustration
-all_cells = ["TEGLU10","VLMC2","DEGLU1","MBDOP2","DGGRC2","MOL2"]
+# Plot 6 cell types for illustration
+all_cells = ["TEGLU10", "VLMC2", "DEGLU1", "MBDOP2", "DGGRC2", "MOL2"]
 
-# plot in spatial coordinates
-with mpl.rc_context({'axes.facecolor':  'black',
-                     'figure.figsize': [4.5, 5]}):
-
-    sc.pl.spatial(adata, cmap='magma',
-                  color=all_cells,
-                  ncols=4, size=1.3,
-                  img_key='hires',
-                  vmin=0, vmax='p100')
-
+# Plot in spatial coordinates
+with mpl.rc_context({'axes.facecolor': 'black', 'figure.figsize': [4.5, 5]}):
+    sc.pl.spatial(
+        adata,
+        cmap='magma',
+        color=all_cells,
+        ncols=4,
+        size=1.3,
+        img_key='hires',
+        vmin=0,
+        vmax='p100'
+    )
 
 from cell2location.plt import plot_spatial
 
-# select up to 6 clusters
-clust_labels =  ["TEGLU10","VLMC2","DEGLU1","MBDOP2","DGGRC2","MOL2"]
-clust_col = ['' + str(i) for i in clust_labels] # in case column names differ from labels
-
+# Select up to 6 clusters
+clust_labels = ["TEGLU10", "VLMC2", "DEGLU1", "MBDOP2", "DGGRC2", "MOL2"]
+clust_col = [str(i) for i in clust_labels]  # in case column names differ from labels
 
 with mpl.rc_context({'figure.figsize': (15, 15)}):
     fig = plot_spatial(
         adata=adata,
         # labels to show on a plot
-        color=clust_col, labels=clust_labels,
+        color=clust_col,
+        labels=clust_labels,
         show_img=True,
         # 'fast' (white background) or 'dark_background'
         style='fast',
@@ -324,7 +340,7 @@ with mpl.rc_context({'figure.figsize': (15, 15)}):
         circle_diameter=1,
         colorbar_position='right'
     )
-    </code></pre>
+</code></pre>
 </div>
 
 <img
@@ -333,10 +349,12 @@ with mpl.rc_context({'figure.figsize': (15, 15)}):
     style="width:600px; height:auto;"
 >
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-<p>The plot shows the spatial distribution of cell-type abundance across a tissue section, 
-    as inferred by cell2location. Each panel represents a specific cell type, 
-    with brighter colors indicating higher estimated abundance at that spatial spot. 
-    The values reflect quantitative posterior estimates of how many cells of each type are confidently present per location.</p>
+    <p>
+        The plot shows the spatial distribution of cell-type abundance across a tissue section,
+        as inferred by cell2location. Each panel represents a specific cell type,
+        with brighter colors indicating higher estimated abundance at that spatial spot.
+        The values reflect quantitative posterior estimates of how many cells of each type are confidently present per location.
+    </p>
 </div>
 
 <img
@@ -345,8 +363,8 @@ with mpl.rc_context({'figure.figsize': (15, 15)}):
     style="width:600px; height:auto;"
 >
 <div style="text-align:left; font-style:italic; margin-top:4px;">
-<p>This plot shows the co-localized spatial abundance of six selected cell types overlaid on a tissue section using cell2location. 
-    Each dot represents a spatial spot, colored by the relative abundance of the corresponding cell type, with brighter shades indicating higher confidence presence. 
+    <p>
+        This plot shows the co-localized spatial abundance of six selected cell types overlaid on a tissue section using cell2location.
+        Each dot represents a spatial spot, colored by the relative abundance of the corresponding cell type, with brighter shades indicating higher confidence presence.
     </p>
 </div>
-
