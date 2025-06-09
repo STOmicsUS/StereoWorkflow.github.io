@@ -57,35 +57,6 @@ from cell2location.utils.filtering import filter_genes
 selected = filter_genes(adata_ref, cell_count_cutoff=50, cell_percentage_cutoff2=0.05, nonz_mean_cutoff=1.12)
 adata_ref = adata_ref[:, selected].copy()
 
-    </code></pre>
-</div>
-
-<img
-    src="images/Cell2Loc/Ref_filtering.png"
-    alt="filtered reference data"
-    style="width:600px; height:auto;"
->
-<div style="text-align:center; font-style:italic; margin-top:4px;">
-The image shows the results of filtering the reference data, 
-the orange box highlighting the area where genes are filtered out (do not meet cutoff criteria).
-After filtering, you have 67,419 cells and 9,435 genes.
-</div>
-
-<!-- Code block toggle button -->
-<button
-    class="btn btn btn-info float-right"
-    type="button"
-    data-toggle="collapse"
-    data-target="#Cell2LocCode_prepare"
-    aria-expanded="false"
-    aria-controls="Cell2LocCode_prepare"
->
-    Show/Hide Code
-</button>
-
-<!-- Collapsible code block -->
-<div class="collapse" id="Cell2LocCode_prepare">
-    <pre><code class="language-python">
 #Prepares your adata_ref for use with cell2location’s RegressionModel.
 #Registers ClusterName (cell type labels) as the categorical variable for modeling.
 cell2location.models.RegressionModel.setup_anndata(adata=adata_ref,labels_key='ClusterName')
@@ -96,10 +67,23 @@ mod.view_anndata_setup()
     </code></pre>
 </div>
 
+<img
+    src="images/Cell2Loc/Ref_filtering.png"
+    alt="filtered reference data"
+    style="width:600px; height:auto;"
+>
+<div style="text-align:left; font-style:italic; margin-top:4px;">
+The image shows the results of filtering the reference data, 
+the orange box highlighting the area where genes are filtered out (do not meet cutoff criteria).
+After filtering, you have 67,419 cells and 9,435 genes.
+</div>
+
+
 2. Cell2Location model training.
 
-Next, Trains the RegressionModel for 250 epochs to learn gene expression signatures for each cell type 
-using filtered single-cell data. 
+<p>Trains the RegressionModel for 250 epochs to learn gene expression signatures for each cell type 
+using filtered single-cell data.</p> 
+
 <!-- Code block toggle button -->
 <button
     class="btn btn btn-info float-right"
@@ -112,13 +96,12 @@ using filtered single-cell data.
     Show/Hide Code
 </button>
 
+
 <!-- Collapsible code block -->
 <div class="collapse" id="Cell2LocCode_Ref_train">
     <pre><code class="language-python">
 mod.train(max_epochs=250)
 mod.plot_history(20)
-
-
     </code></pre>
 </div>
 
@@ -127,7 +110,52 @@ mod.plot_history(20)
     alt="training loss"
     style="width:600px; height:auto;"
 >
-<div style="text-align:center; font-style:italic; margin-top:4px;">
+<div style="text-align:left; font-style:italic; margin-top:4px;">
 The image shows that the loss steadily decreases as training progresses, 
 indicating that the model is successfully learning and fitting the data.
+</div>
+
+3. Evaluate Reference training result.
+
+<p>Exports posterior estimates (model's learned expected gene expression for each cell type) 
+    and adds them to the reference AnnData object. Evaluate the training result by plotting the
+    Observed gene expression values vs. estimates gene expression.</p>
+
+<!-- Code block toggle button -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Cell2LocCode_Ref_trainEva"
+    aria-expanded="false"
+    aria-controls="Cell2LocCode_Ref_trainEva"
+>
+    Show/Hide Code
+</button>
+
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Cell2LocCode_Ref_trainEva">
+    <pre><code class="language-python">
+adata_ref = mod.export_posterior(
+    adata_ref, use_quantiles=True,
+    # choose quantiles
+    add_to_varm =["q05","q50", "q95", "q0001"],
+    sample_kwargs={'batch_size': 2500}
+)
+
+mod.plot_QC(summary_name="q50")
+    </code></pre>
+</div>
+
+<img
+    src="images/Cell2Loc/Training_QC.png"
+    alt="training loss"
+    style="width:600px; height:auto;"
+>
+<div style="text-align:left; font-style:italic; margin-top:4px;">
+<p>First plot: "Reconstruction accuracy" shows observed gene expression values vs. Model's posterior expected value (reconstructed value).
+</p>
+<p>Second plot: "Estimated vs. Mean expression" shows mean expression for every gene in every cell type from the data vs.
+Model's estimated expression (log10) for each gene in each cluster.</p>
 </div>
