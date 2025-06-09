@@ -1,0 +1,133 @@
+<!-- Cell Type Annotation -->
+<!-- Cell2Loc -->
+
+<h2 id="Cell2Loc" class="mt-5">Cell2location</h2>
+<p>
+    <b>Cell2location</b> is a powerful tool for spatial transcriptomics analysis that integrates single-cell RNA-seq data as a reference. 
+    It is primarily designed for cell type deconvolution, accurately estimating the abundance of multiple cell types within each spatial spot, especially when spots contain mixtures of cells. 
+    When the spatial resolution approaches single-cell level,you can run it with <i>N_cells_per_location=1</i>, 
+    then you can use cell2location to infer the most likely cell type for each spot. 
+    In this special case, cell2location's estimated cell type abundance per spot can be interpreted as a "soft" cell type annotation. 
+    Its versatility makes it widely used in both high-resolution and lower-resolution spatial transcriptomics datasets.
+</p>
+
+<p>
+    1. Cell2Location data preparation.
+</p>
+
+<!-- Code block toggle button -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Cell2LocCode_filtering"
+    aria-expanded="false"
+    aria-controls="Cell2LocCode_filtering"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Cell2LocCode_filtering">
+    <pre><code class="language-python">
+import scanpy as sc
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib import rcParams
+import cell2location
+
+#Set up output dirctory
+results_folder = './Stereo_cellbin_demo'
+ref_run_name = f'{results_folder}/cellbin_reference_signatures'
+run_name = f'{results_folder}/cellbin_map'
+
+# Load the the cellbin data and the reference single-cell RNA-seq data
+adata = sc.read_h5ad("SS200000135TL_D1.adjusted.cellbin.gef_cellBin.seurat.h5ad")
+adata_ref = sc.read_h5ad("Mouse_brain_ref.anndata075.h5ad")
+
+adata.var['SYMBOL'] = adata.var_names
+adata.var['MT_gene'] = [gene.startswith('mt-') for gene in adata.var['SYMBOL']]
+adata.obsm['MT'] = adata[:, adata.var['MT_gene'].values].X.toarray()
+adata = adata[:, ~adata.var['MT_gene'].values]
+
+# filter the Reference using cell2location filtering function.
+
+from cell2location.utils.filtering import filter_genes
+selected = filter_genes(adata_ref, cell_count_cutoff=50, cell_percentage_cutoff2=0.05, nonz_mean_cutoff=1.12)
+adata_ref = adata_ref[:, selected].copy()
+
+    </code></pre>
+</div>
+
+<img
+    src="images/Cell2Loc/Ref_filtering.png"
+    alt="filtered reference data"
+    style="width:600px; height:auto;"
+>
+<div style="text-align:center; font-style:italic; margin-top:4px;">
+The image shows the results of filtering the reference data, 
+the orange box highlighting the area where genes are filtered out (do not meet cutoff criteria).
+After filtering, you have 67,419 cells and 9,435 genes.
+</div>
+
+<!-- Code block toggle button -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Cell2LocCode_prepare"
+    aria-expanded="false"
+    aria-controls="Cell2LocCode_prepare"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Cell2LocCode_prepare">
+    <pre><code class="language-python">
+#Prepares your adata_ref for use with cell2location’s RegressionModel.
+#Registers ClusterName (cell type labels) as the categorical variable for modeling.
+cell2location.models.RegressionModel.setup_anndata(adata=adata_ref,labels_key='ClusterName')
+from cell2location.models import RegressionModel
+mod = RegressionModel(adata_ref)
+mod.view_anndata_setup()
+
+    </code></pre>
+</div>
+
+2. Cell2Location model training.
+
+Next, Trains the RegressionModel for 250 epochs to learn gene expression signatures for each cell type 
+using filtered single-cell data. 
+<!-- Code block toggle button -->
+<button
+    class="btn btn btn-info float-right"
+    type="button"
+    data-toggle="collapse"
+    data-target="#Cell2LocCode_Ref_train"
+    aria-expanded="false"
+    aria-controls="Cell2LocCode_Ref_train"
+>
+    Show/Hide Code
+</button>
+
+<!-- Collapsible code block -->
+<div class="collapse" id="Cell2LocCode_Ref_train">
+    <pre><code class="language-python">
+mod.train(max_epochs=250)
+mod.plot_history(20)
+
+
+    </code></pre>
+</div>
+
+<img
+    src="images/Cell2Loc/Ref_training.png"
+    alt="training loss"
+    style="width:600px; height:auto;"
+>
+<div style="text-align:center; font-style:italic; margin-top:4px;">
+The image shows that the loss steadily decreases as training progresses, 
+indicating that the model is successfully learning and fitting the data.
+</div>
